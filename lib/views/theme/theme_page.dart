@@ -9,6 +9,10 @@ import 'package:macos_ui/macos_ui.dart';
 
 // 主题切换
 class ThemePage extends StatefulWidget {
+  const ThemePage({
+    Key key,
+  }) : super(key: key);
+
   @override
   _ThemePageState createState() => _ThemePageState();
 }
@@ -40,36 +44,38 @@ class _ThemePageState extends State<ThemePage> {
               child: Column(
                 children: [
                   Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Light Theme'),
-                    const SizedBox(width: 24),
-                    MacosRadioButton<String>(
-                      groupValue: StoreProvider.of<ZState>(context).state.theme,
-                      value: ModelConst.lightTheme,
-                      onChanged: (value) {
-                        StoreProvider.of<ZState>(context).dispatch(
-                                UpdateThemeAction(ModelConst.lightTheme));
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Dark Theme'),
-                    const SizedBox(width: 26),
-                    MacosRadioButton<String>(
-                      groupValue: StoreProvider.of<ZState>(context).state.theme,
-                      value: ModelConst.darkTheme,
-                      onChanged: (value) {
-                        StoreProvider.of<ZState>(context).dispatch(
-                                UpdateThemeAction(ModelConst.darkTheme));
-                      },
-                    ),
-                  ],
-                ),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Light Theme'),
+                      const SizedBox(width: 24),
+                      MacosRadioButton<String>(
+                        groupValue:
+                            StoreProvider.of<ZState>(context).state.theme,
+                        value: ModelConst.lightTheme,
+                        onChanged: (value) {
+                          StoreProvider.of<ZState>(context).dispatch(
+                              UpdateThemeAction(ModelConst.lightTheme));
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Dark Theme'),
+                      const SizedBox(width: 26),
+                      MacosRadioButton<String>(
+                        groupValue:
+                            StoreProvider.of<ZState>(context).state.theme,
+                        value: ModelConst.darkTheme,
+                        onChanged: (value) {
+                          StoreProvider.of<ZState>(context).dispatch(
+                              UpdateThemeAction(ModelConst.darkTheme));
+                        },
+                      ),
+                    ],
+                  ),
                 ],
               ),
             );

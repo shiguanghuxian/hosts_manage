@@ -43,7 +43,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     log('需要更新hosts');
     return state.copyWith(
       hostsList: hostsList,
-      showHosts: event.selectedHosts,
       changeHostList: state.changeHostList + 1,
     );
   }

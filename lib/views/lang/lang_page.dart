@@ -7,6 +7,10 @@ import 'package:macos_ui/macos_ui.dart';
 
 // 语言切换
 class LangPage extends StatefulWidget {
+  const LangPage({
+    Key key,
+  }) : super(key: key);
+
   @override
   _LangPageState createState() => _LangPageState();
 }

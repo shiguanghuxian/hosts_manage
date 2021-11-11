@@ -1,17 +1,17 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:hosts_manage/components/macos_alert_dialog.dart';
 import 'package:hosts_manage/i18n/i18n.dart';
 import 'package:hosts_manage/store/store.dart';
 import 'package:hosts_manage/views/home/bloc/home_bloc.dart';
+import 'package:hosts_manage/views/home/widgets/hosts_list_widget.dart';
 import 'package:macos_ui/macos_ui.dart';
 
 // 已存在的hosts配置列表
 class HomeHostsList extends StatefulWidget {
-  HomeHostsList({
+  const HomeHostsList({
     Key key,
   }) : super(key: key);
 
@@ -47,53 +47,7 @@ class _HomeHostsListState extends State<HomeHostsList> {
             // hosts配置列表
             List<Widget> hostsWidgets = [];
             for (var val in _homeBloc.state.hostsList) {
-              Widget trailing;
-              if (val.isBaseHosts != true) {
-                if (state.editList) {
-                  trailing = PushButton(
-                    onPressed: () {
-                      log('点击删除 ${val.name}');
-                    },
-                    color: Colors.red[400],
-                    buttonSize: ButtonSize.small,
-                    child: Text(lang.get('public.delete')),
-                  );
-                } else {
-                  trailing = Transform.scale(
-                    scale: 0.7,
-                    child: MacosSwitch(
-                      value: val.check,
-                      onChanged: (value) {
-                        log('点击 ${value} -- ${val.isBaseHosts}');
-                        context
-                            .read<HomeBloc>()
-                            .add(ChangeSelectedHostsEvent(val.key, value));
-                      },
-                    ),
-                  );
-                }
-              }
-              hostsWidgets.add(ListTile(
-                onTap: () {
-                  // 单击切换 - 判断右侧内容不是否编辑
-                  context.read<HomeBloc>().add(ChangeShowHostsEvent(val.key));
-                },
-                onLongPress: () {
-                  // 长按弹出删除提示
-                },
-                title: Text(
-                  val.name,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: val.key == state.showHosts
-                        ? MacosTheme.of(context).primaryColor
-                        : MacosTheme.of(context).typography.title1.color,
-                  ),
-                ),
-                trailing: val.isBaseHosts ? null : trailing,
-              ));
+              hostsWidgets.add(HostsListWidget(hostsInfoModel: val));
             }
             return Stack(
               children: [
@@ -115,6 +69,40 @@ class _HomeHostsListState extends State<HomeHostsList> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         InkWell(
+                          onTap: () {
+                            showMacOSAlertDialog(
+                              context: context,
+                              builder: (_) => MacOSAlertDialog(
+                                title: Text(
+                                  'Alert Dialog with Primary Action',
+                                  style: MacosTheme.of(context)
+                                      .typography
+                                      .headline,
+                                ),
+                                message: Text(
+                                  'This is an alert dialog with a primary action and no secondary action',
+                                  textAlign: TextAlign.center,
+                                  style: MacosTheme.of(context)
+                                      .typography
+                                      .headline,
+                                ),
+                                primaryButton: PushButton(
+                                  buttonSize: ButtonSize.large,
+                                  child: Text('Primary'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                secondaryButton: PushButton(
+                                  buttonSize: ButtonSize.large,
+                                  child: Text('Primary'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ),
+                            );
+                          },
                           child: MacosIcon(
                             CupertinoIcons.add_circled,
                             color: MacosTheme.of(context).primaryColor,
@@ -127,7 +115,9 @@ class _HomeHostsListState extends State<HomeHostsList> {
                                 .add(ChangeEditListEvent(!state.editList));
                           },
                           child: Text(
-                            state.editList ? lang.get('public.done') : lang.get('public.edit'),
+                            state.editList
+                                ? lang.get('public.done')
+                                : lang.get('public.edit'),
                             style: TextStyle(
                               color: MacosTheme.of(context).primaryColor,
                             ),

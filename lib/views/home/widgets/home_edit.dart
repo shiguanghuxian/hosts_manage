@@ -16,7 +16,7 @@ import 'package:path_provider/path_provider.dart';
 
 // 编辑一个hosts内容
 class HomeEdit extends StatefulWidget {
-  HomeEdit({
+  const HomeEdit({
     Key key,
   }) : super(key: key);
 

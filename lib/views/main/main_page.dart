@@ -13,7 +13,7 @@ import 'package:macos_ui/macos_ui.dart';
 import 'package:proste_indexed_stack/proste_indexed_stack.dart';
 
 class MainPage extends StatefulWidget {
-  MainPage({Key key}) : super(key: key);
+  const MainPage({Key key}) : super(key: key);
 
   @override
   _MainPageState createState() => _MainPageState();
@@ -23,9 +23,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      
-    });
+    setState(() {});
   }
 
   @override
@@ -33,23 +31,24 @@ class _MainPageState extends State<MainPage> {
     super.dispose();
   }
 
+  // 当前显示页面
   int pageIndex = 0;
 
   final List<IndexedStackChild> pages = [
     IndexedStackChild(
-      child: HomePage(),
+      child: const HomePage(),
     ),
     IndexedStackChild(
-      child: DNSPage(),
+      child: const DNSPage(),
     ),
     IndexedStackChild(
-      child: ThemePage(),
+      child: const ThemePage(),
     ),
     IndexedStackChild(
-      child: LangPage(),
+      child: const LangPage(),
     ),
     IndexedStackChild(
-      child: AboutPage(),
+      child: const AboutPage(),
     ),
   ];
 

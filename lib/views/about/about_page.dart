@@ -7,6 +7,10 @@ import 'package:macos_ui/macos_ui.dart';
 
 // 关于
 class AboutPage extends StatefulWidget {
+  const AboutPage({
+    Key key,
+  }) : super(key: key);
+
   @override
   _AboutPageState createState() => _AboutPageState();
 }

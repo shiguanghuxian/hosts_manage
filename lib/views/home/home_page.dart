@@ -11,6 +11,10 @@ import 'package:macos_ui/macos_ui.dart';
 
 // 首页
 class HomePage extends StatefulWidget {
+  const HomePage({
+    Key key,
+  }) : super(key: key);
+
   @override
   _HomePageState createState() => _HomePageState();
 }

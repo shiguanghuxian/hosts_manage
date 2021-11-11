@@ -9,6 +9,10 @@ import 'package:macos_ui/macos_ui.dart';
 
 // 本地DNS代理
 class DNSPage extends StatefulWidget {
+  const DNSPage({
+    Key key,
+  }) : super(key: key);
+
   @override
   _DNSPageState createState() => _DNSPageState();
 }
