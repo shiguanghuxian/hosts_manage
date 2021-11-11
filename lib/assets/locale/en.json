@@ -1,0 +1,30 @@
+{
+    "public": {
+        "app_name": "Hosts Manage",
+        "loading": "Loading...",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "unknown_err": "unknown error",
+        "edit": "Edit",
+        "done": "Done",
+        "delete": "Del",
+        "save": "Save"
+    },
+    "home": {
+        "title": "Hosts Manage",
+        "backup_hosts": "Backup",
+        "base_hosts": "Base"
+    },
+    "dns": {
+        "title": "Local DNS proxy"
+    },
+    "theme": {
+        "title": "Theme"
+    },
+    "lang": {
+        "title": "Lang"
+    },
+    "about": {
+        "title": "About"
+    }
+}
