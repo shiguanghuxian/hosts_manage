@@ -14,7 +14,15 @@
         "title": "Hosts管理",
         "backup_hosts": "备份",
         "base_hosts": "基础配置",
-        "base_hosts_toast": "基础配置不允许操作开关"
+        "base_hosts_toast": "基础配置不允许操作开关",
+        "show_system_hosts": "查看系统hosts",
+        "read_hosts_file_err": "读取对应hosts配置内容错误",
+        "name_exists": "配置名已存在",
+        "name_is_empty": "配置名不能为空",
+        "add_hosts_title": "添加hosts配置",
+        "add_hosts_placeholder": "请输入hosts配置显示名",
+        "del_hosts_title": "删除hosts配置",
+        "del_hosts_message": "确定删除这个hosts配置？"
     },
     "dns": {
         "title": "本地DNS代理"

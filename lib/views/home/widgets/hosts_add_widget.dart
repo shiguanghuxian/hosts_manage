@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:hosts_manage/components/macos_alert_dialog.dart';
 import 'package:hosts_manage/i18n/i18n.dart';
@@ -25,8 +26,10 @@ class _HostsAddWidgetState extends State<HostsAddWidget> {
   @override
   void initState() {
     super.initState();
+    _homeBloc = context.read<HomeBloc>();
   }
 
+  HomeBloc _homeBloc;
   String hostsName = '';
   TextEditingController hostsNameController = TextEditingController();
 
@@ -43,18 +46,18 @@ class _HostsAddWidgetState extends State<HostsAddWidget> {
         I18N lang = StoreProvider.of<ZState>(context).state.lang;
         return BlocBuilder<HomeBloc, HomeState>(
           buildWhen: (previous, current) {
-            return false;
+            return previous.hostsList != current.hostsList;
           },
           builder: (context, state) {
             return InkWell(
               onTap: () {
                 hostsNameController.text = '';
-                context.read<HomeBloc>().add(const ChangeEditListEvent(false));
+                _homeBloc.add(const ChangeEditListEvent(false));
                 showMacOSAlertDialog(
                   context: context,
                   builder: (BuildContext context) => MacOSAlertDialog(
                     title: Text(
-                      '添加hosts配置',
+                      lang.get('home.add_hosts_title'),
                       style: MacosTheme.of(context).typography.headline,
                     ),
                     message: Container(
@@ -70,7 +73,8 @@ class _HostsAddWidgetState extends State<HostsAddWidget> {
                                 });
                               },
                               autofocus: true,
-                              placeholder: '请输入hosts配置显示名',
+                              placeholder:
+                                  lang.get('home.add_hosts_placeholder'),
                             ),
                           ),
                         ],
@@ -89,6 +93,18 @@ class _HostsAddWidgetState extends State<HostsAddWidget> {
                       buttonSize: ButtonSize.large,
                       child: Text(lang.get('public.confirm')),
                       onPressed: () {
+                        hostsName = hostsName.trim();
+                        if (hostsName == '') {
+                          EasyLoading.showError(lang.get('home.name_is_empty'));
+                          return;
+                        }
+                        for (var item in state.hostsList) {
+                          if (hostsName == item.name) {
+                            EasyLoading.showError(lang.get('home.name_exists'));
+                            return;
+                          }
+                        }
+                        _homeBloc.add(AddHostsEvent(hostsName));
                         setState(() {
                           hostsName = '';
                         });

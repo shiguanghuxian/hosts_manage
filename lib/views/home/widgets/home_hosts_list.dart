@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:hosts_manage/components/macos_alert_dialog.dart';
 import 'package:hosts_manage/i18n/i18n.dart';
+import 'package:hosts_manage/models/const.dart';
 import 'package:hosts_manage/store/store.dart';
 import 'package:hosts_manage/views/home/bloc/home_bloc.dart';
 import 'package:hosts_manage/views/home/widgets/hosts_add_widget.dart';
@@ -57,6 +58,25 @@ class _HomeHostsListState extends State<HomeHostsList> {
                   padding: const EdgeInsets.only(left: 8, right: 0),
                   child: Column(
                     children: hostsWidgets,
+                  ),
+                ),
+                Positioned(
+                  left: 10,
+                  right: 10,
+                  bottom: 30,
+                  child: PushButton(
+                    onPressed: () {
+                      context.read<HomeBloc>().add(const ChangeShowHostsEvent(
+                          ModelConst.systemShowHosts));
+                    },
+                    color: MacosTheme.of(context).primaryColor,
+                    buttonSize: ButtonSize.large,
+                    child: Text(
+                      lang.get('home.show_system_hosts'),
+                      style: const TextStyle(
+                        fontSize: 13,
+                      ),
+                    ),
                   ),
                 ),
                 Positioned(

@@ -13,7 +13,16 @@
     "home": {
         "title": "Hosts Manage",
         "backup_hosts": "Backup",
-        "base_hosts": "Base"
+        "base_hosts": "Base",
+        "base_hosts_toast": "Operation not allowed for basic configuration",
+        "show_system_hosts": "View system hosts",
+        "read_hosts_file_err": "Error reading corresponding hosts configuration content",
+        "name_exists":"Name already exists",
+        "name_is_empty": "Name cannot be empty",
+        "add_hosts_title": "Add hosts configuration",
+        "add_hosts_placeholder": "Please enter a name",
+        "del_hosts_title": "Del hosts configuration",
+        "del_hosts_message": "Are you sure to delete this hosts configuration?"
     },
     "dns": {
         "title": "Local DNS proxy"

@@ -26,6 +26,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       yield _mapChangeShowHosts(event, state);
     } else if (event is ChangeEditListEvent) {
       yield _mapChangeEditList(event, state);
+    } else if (event is AddHostsEvent) {
+      yield await _mapAddHosts(event, state);
+    } else if (event is DelHostsEvent) {
+      yield await _mapDelHosts(event, state);
     }
   }
 
@@ -104,6 +108,69 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeState _mapChangeEditList(ChangeEditListEvent event, HomeState state) {
     return state.copyWith(
       editList: event.editList,
+      changeHostList: state.changeHostList + 1,
+    );
+  }
+
+  /// 添加hosts配置
+  Future<HomeState> _mapAddHosts(AddHostsEvent event, HomeState state) async {
+    List<HostsInfoModel> hostsList = state.hostsList;
+    // 写入基本数据
+    String key = _generateSha1(event.name);
+    Directory libDir = await getLibraryDirectory();
+    File hostsPath = File(libDir.path + "/" + key + ".json");
+    if (hostsPath.existsSync()) {
+      EasyLoading.showError('文件已存在！！！');
+      return state;
+    }
+    // 创建hosts配置内容文件
+    hostsPath.writeAsStringSync('# ${event.name}\n');
+
+    hostsList.add(HostsInfoModel(
+      key: key,
+      name: event.name,
+      check: false,
+      isBaseHosts: false,
+    ));
+
+    // 更新hosts配置列表
+    File hostsFile = File(libDir.path + "/" + "hosts.json");
+    hostsFile.writeAsString(json.encode(hostsList)); // 写入默认列表
+
+    return state.copyWith(
+      showHosts: key,
+      hostsList: hostsList,
+      changeHostList: state.changeHostList + 1,
+    );
+  }
+
+  /// 删除一个hosts配置
+  Future<HomeState> _mapDelHosts(DelHostsEvent event, HomeState state) async {
+    // 是否删除当前查看hosts配置
+    String showHosts = state.showHosts;
+    if (event.key == state.showHosts) {
+      showHosts = '';
+    }
+
+    Directory libDir = await getLibraryDirectory();
+    // 删除文件
+    File hostsPath = File(libDir.path + "/" + event.key + ".json");
+    hostsPath.deleteSync();
+    // 从列表删除
+    List<HostsInfoModel> hostsList = [];
+    for (var item in state.hostsList) {
+      if (item.key != event.key) {
+        hostsList.add(item);
+      }
+    }
+
+    // 更新hosts配置列表
+    File hostsFile = File(libDir.path + "/" + "hosts.json");
+    hostsFile.writeAsString(json.encode(hostsList)); // 写入默认列表
+
+    return state.copyWith(
+      showHosts: showHosts,
+      hostsList: hostsList,
       changeHostList: state.changeHostList + 1,
     );
   }

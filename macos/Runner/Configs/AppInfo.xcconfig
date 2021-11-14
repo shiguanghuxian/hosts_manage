@@ -8,7 +8,7 @@
 PRODUCT_NAME = hosts_manage
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.hostsManage
+PRODUCT_BUNDLE_IDENTIFIER = cn.zuoxiupeng.hostsManage
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2021 com.example. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2021 时光弧线 All rights reserved.

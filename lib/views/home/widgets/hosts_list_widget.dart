@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:hosts_manage/components/macos_alert_dialog.dart';
 import 'package:hosts_manage/i18n/i18n.dart';
 import 'package:hosts_manage/models/hosts_info_model.dart';
 import 'package:hosts_manage/store/store.dart';
@@ -28,7 +29,10 @@ class _HostsListWidgetState extends State<HostsListWidget> {
   @override
   void initState() {
     super.initState();
+    _homeBloc = context.read<HomeBloc>();
   }
+
+  HomeBloc _homeBloc;
 
   @override
   void dispose() {
@@ -54,6 +58,34 @@ class _HostsListWidgetState extends State<HostsListWidget> {
                 trailing = PushButton(
                   onPressed: () {
                     log('点击删除 ${widget.hostsInfoModel.name}');
+                    showMacOSAlertDialog(
+                      context: context,
+                      builder: (BuildContext context) => MacOSAlertDialog(
+                        title: Text(
+                          lang.get('home.del_hosts_title'),
+                          style: MacosTheme.of(context).typography.headline,
+                        ),
+                        message: Text(lang.get('home.del_hosts_message')),
+                        primaryButton: PushButton(
+                          color: Colors.grey[350],
+                          buttonSize: ButtonSize.large,
+                          child: Text(lang.get('public.cancel')),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        secondaryButton: PushButton(
+                          color: Colors.redAccent[400],
+                          buttonSize: ButtonSize.large,
+                          child: Text(lang.get('public.confirm')),
+                          onPressed: () {
+                            _homeBloc
+                                .add(DelHostsEvent(widget.hostsInfoModel.key));
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+                    );
                   },
                   color: Colors.red[400],
                   buttonSize: ButtonSize.small,

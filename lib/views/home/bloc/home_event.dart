@@ -55,3 +55,29 @@ class ChangeEditListEvent extends HomeEvent {
   @override
   String toString() => 'ChangeEditListEvent { $editList }';
 }
+
+/// 添加hosts配置
+class AddHostsEvent extends HomeEvent {
+  final String name;
+
+  const AddHostsEvent(this.name);
+
+  @override
+  List<Object> get props => [name];
+
+  @override
+  String toString() => 'AddHostsEvent { $name }';
+}
+
+/// 删除一个hosts配置
+class DelHostsEvent extends HomeEvent {
+  final String key;
+
+  const DelHostsEvent(this.key);
+
+  @override
+  List<Object> get props => [key];
+
+  @override
+  String toString() => 'DelHostsEvent { $key }';
+}
