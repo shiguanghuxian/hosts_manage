@@ -409,9 +409,11 @@ packages:
   system_tray:
     dependency: "direct main"
     description:
-      path: "/Users/zuoxiupeng/Documents/flutter/system_tray"
-      relative: false
-    source: path
+      path: "."
+      ref: "v0.0.8"
+      resolved-ref: c044e05b14cfe2fe7a413c32ddb6a85b533cab28
+      url: "git@github.com:shiguanghuxian/system_tray.git"
+    source: git
     version: "0.0.7"
   term_glyph:
     dependency: transitive

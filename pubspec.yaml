@@ -52,7 +52,9 @@ dependencies:
   code_text_field: ^1.0.2
   crypto: ^3.0.1
   system_tray: 
-    path: /Users/zuoxiupeng/Documents/flutter/system_tray
+    git: 
+      url: git@github.com:shiguanghuxian/system_tray.git
+      ref: v0.0.8
   path: ^1.8.0
 
 dev_dependencies:

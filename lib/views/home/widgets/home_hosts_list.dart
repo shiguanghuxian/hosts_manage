@@ -34,6 +34,7 @@ class _HomeHostsListState extends State<HomeHostsList> {
 
   HomeBloc _homeBloc;
   I18N lang;
+  final system_tray.AppWindow _appWindow = system_tray.AppWindow();
 
   @override
   void dispose() {
@@ -49,11 +50,14 @@ class _HomeHostsListState extends State<HomeHostsList> {
       path = "lib/assets/images/icon.ico";
     }
 
+    print('再次init菜单');
+
     // We first init the systray menu and then add the menu entries
     await _systemTray.initSystemTray(
       title: lang.get('public.app_name'),
       iconPath: path,
       toolTip: lang.get('home.icon_tooltip'),
+      leftMouseShowMenu: true,
     );
     await _setContextMenu();
   }
@@ -67,6 +71,7 @@ class _HomeHostsListState extends State<HomeHostsList> {
         label: lang.get('home.show_edit_hosts'),
         onClicked: () {
           log(lang.get('home.show_edit_hosts'));
+          _appWindow.show();
         },
       ),
       system_tray.MenuSeparator(),
