@@ -248,7 +248,7 @@ packages:
     source: hosted
     version: "1.0.0"
   path:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path
       url: "https://pub.flutter-io.cn"
@@ -406,6 +406,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.1.0"
+  system_tray:
+    dependency: "direct main"
+    description:
+      path: "/Users/zuoxiupeng/Documents/flutter/system_tray"
+      relative: false
+    source: path
+    version: "0.0.7"
   term_glyph:
     dependency: transitive
     description:

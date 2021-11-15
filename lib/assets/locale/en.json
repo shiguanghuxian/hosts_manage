@@ -8,7 +8,8 @@
         "edit": "Edit",
         "done": "Done",
         "delete": "Del",
-        "save": "Save"
+        "save": "Save",
+        "exit": "Exit"
     },
     "home": {
         "title": "Hosts Manage",
@@ -22,7 +23,9 @@
         "add_hosts_title": "Add hosts configuration",
         "add_hosts_placeholder": "Please enter a name",
         "del_hosts_title": "Del hosts configuration",
-        "del_hosts_message": "Are you sure to delete this hosts configuration?"
+        "del_hosts_message": "Are you sure to delete this hosts configuration?",
+        "show_edit_hosts": "Edit hosts configuration",
+        "icon_tooltip": "Hosts file management tool"
     },
     "dns": {
         "title": "Local DNS proxy"

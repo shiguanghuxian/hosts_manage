@@ -1,15 +1,19 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:hosts_manage/components/macos_alert_dialog.dart';
 import 'package:hosts_manage/i18n/i18n.dart';
 import 'package:hosts_manage/models/const.dart';
+import 'package:hosts_manage/models/hosts_info_model.dart';
 import 'package:hosts_manage/store/store.dart';
 import 'package:hosts_manage/views/home/bloc/home_bloc.dart';
 import 'package:hosts_manage/views/home/widgets/hosts_add_widget.dart';
 import 'package:hosts_manage/views/home/widgets/hosts_list_widget.dart';
 import 'package:macos_ui/macos_ui.dart';
+import 'package:system_tray/system_tray.dart' as system_tray;
 
 // 已存在的hosts配置列表
 class HomeHostsList extends StatefulWidget {
@@ -36,16 +40,79 @@ class _HomeHostsListState extends State<HomeHostsList> {
     super.dispose();
   }
 
+  // 状态栏菜单
+  final system_tray.SystemTray _systemTray = system_tray.SystemTray();
+  Future<void> initSystemTray() async {
+    // 图标
+    String path = 'lib/assets/images/icon.png';
+    if (Platform.isWindows) {
+      path = "lib/assets/images/icon.ico";
+    }
+
+    // We first init the systray menu and then add the menu entries
+    await _systemTray.initSystemTray(
+      title: lang.get('public.app_name'),
+      iconPath: path,
+      toolTip: lang.get('home.icon_tooltip'),
+    );
+    await _setContextMenu();
+  }
+
+  /// 更新菜单选项
+  Future<void> _setContextMenu() async {
+    // 菜单内容
+    final List<system_tray.MenuItemBase> menuBase = [
+      system_tray.MenuSeparator(),
+      system_tray.MenuItem(
+        label: lang.get('home.show_edit_hosts'),
+        onClicked: () {
+          log(lang.get('home.show_edit_hosts'));
+        },
+      ),
+      system_tray.MenuSeparator(),
+      system_tray.MenuItem(
+        label: lang.get('public.exit'),
+        onClicked: () {
+          log('Exit');
+          exit(0);
+        },
+      ),
+    ];
+
+    final List<system_tray.MenuItemBase> menu = [];
+    for (HostsInfoModel item in _homeBloc.state.hostsList) {
+      if (item.isBaseHosts) {
+        continue;
+      }
+      menu.add(
+        system_tray.MenuItem(
+          state: item.check,
+          label: item.name,
+          onClicked: () {
+            log('Show ${item.name}');
+            context
+                .read<HomeBloc>()
+                .add(ChangeSelectedHostsEvent(item.key, !item.check));
+          },
+        ),
+      );
+    }
+    menu.addAll(menuBase);
+    await _systemTray.setContextMenu(menu);
+  }
+
   @override
   Widget build(BuildContext context) {
     return StoreBuilder<ZState>(
       builder: (context, store) {
         lang = StoreProvider.of<ZState>(context).state.lang;
+        initSystemTray();
         return BlocBuilder<HomeBloc, HomeState>(
           buildWhen: (previous, current) {
             return previous.changeHostList != current.changeHostList;
           },
           builder: (context, state) {
+            _setContextMenu();
             // hosts配置列表
             List<Widget> hostsWidgets = [];
             for (var val in _homeBloc.state.hostsList) {

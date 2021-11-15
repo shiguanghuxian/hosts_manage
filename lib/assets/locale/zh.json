@@ -8,7 +8,8 @@
         "edit": "编辑",
         "done": "完成",
         "delete": "删除",
-        "save": "保存"
+        "save": "保存",
+        "exit": "退出"
     },
     "home": {
         "title": "Hosts管理",
@@ -22,7 +23,9 @@
         "add_hosts_title": "添加hosts配置",
         "add_hosts_placeholder": "请输入hosts配置显示名",
         "del_hosts_title": "删除hosts配置",
-        "del_hosts_message": "确定删除这个hosts配置？"
+        "del_hosts_message": "确定删除这个hosts配置？",
+        "show_edit_hosts": "编辑hosts配置",
+        "icon_tooltip": "hosts文件管理工具"
     },
     "dns": {
         "title": "本地DNS代理"

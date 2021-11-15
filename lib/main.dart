@@ -70,7 +70,7 @@ class _MyAppState extends State<MyApp> {
           darkTheme: DarkTheme,
           themeMode: _mode,
           routes: routes,
-          home: MainPage(),
+          home: const MainPage(),
           builder: EasyLoading.init(),
         );
       }),

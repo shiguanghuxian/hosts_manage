@@ -19,7 +19,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   @override
   Stream<HomeState> mapEventToState(HomeEvent event) async* {
     if (event is ChangeSelectedHostsEvent) {
-      yield _mapChangeSelectedHosts(event, state);
+      yield await _mapChangeSelectedHosts(event, state);
     } else if (event is InitHostsListEvent) {
       yield await _mapInitHostsList(event, state);
     } else if (event is ChangeShowHostsEvent) {
@@ -34,8 +34,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   /// 切换选中的hosts
-  HomeState _mapChangeSelectedHosts(
-      ChangeSelectedHostsEvent event, HomeState state) {
+  Future<HomeState> _mapChangeSelectedHosts(
+      ChangeSelectedHostsEvent event, HomeState state) async {
     List<HostsInfoModel> hostsList = [];
     for (var item in state.hostsList) {
       if (item.key == event.selectedHosts) {
@@ -43,7 +43,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
       hostsList.add(item);
     }
+    // 更新本地hosts配置列表
+    Directory libDir = await getLibraryDirectory();
+    File hostsFile = File(libDir.path + "/" + "hosts.json");
+    hostsFile.writeAsString(json.encode(hostsList)); // 写入默认列表
+
     // TODO 更新hosts 或刷新dns服务
+
     log('需要更新hosts');
     return state.copyWith(
       hostsList: hostsList,
