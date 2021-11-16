@@ -35,6 +35,7 @@ class _HomeHostsListState extends State<HomeHostsList> {
   HomeBloc _homeBloc;
   I18N lang;
   final system_tray.AppWindow _appWindow = system_tray.AppWindow();
+  bool isInitSystemTray = false; // 是否初始化了状态菜单
 
   @override
   void dispose() {
@@ -111,7 +112,12 @@ class _HomeHostsListState extends State<HomeHostsList> {
     return StoreBuilder<ZState>(
       builder: (context, store) {
         lang = StoreProvider.of<ZState>(context).state.lang;
-        initSystemTray();
+        // 防止重复初始化顶部菜单
+        if(!isInitSystemTray) {
+          initSystemTray();
+          isInitSystemTray = true;
+        }
+        
         return BlocBuilder<HomeBloc, HomeState>(
           buildWhen: (previous, current) {
             return previous.changeHostList != current.changeHostList;
@@ -136,17 +142,20 @@ class _HomeHostsListState extends State<HomeHostsList> {
                   left: 10,
                   right: 10,
                   bottom: 30,
-                  child: PushButton(
-                    onPressed: () {
-                      context.read<HomeBloc>().add(const ChangeShowHostsEvent(
-                          ModelConst.systemShowHosts));
-                    },
-                    color: MacosTheme.of(context).primaryColor,
-                    buttonSize: ButtonSize.large,
-                    child: Text(
-                      lang.get('home.show_system_hosts'),
-                      style: const TextStyle(
-                        fontSize: 13,
+                  child: MacosTooltip(
+                    message: lang.get('home.show_hosts_tooltip'),
+                    child: PushButton(
+                      onPressed: () {
+                        context.read<HomeBloc>().add(const ChangeShowHostsEvent(
+                            ModelConst.systemShowHosts));
+                      },
+                      color: MacosTheme.of(context).primaryColor,
+                      buttonSize: ButtonSize.large,
+                      child: Text(
+                        lang.get('home.show_system_hosts'),
+                        style: const TextStyle(
+                          fontSize: 13,
+                        ),
                       ),
                     ),
                   ),
@@ -161,19 +170,25 @@ class _HomeHostsListState extends State<HomeHostsList> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const HostsAddWidget(),
-                        InkWell(
-                          onTap: () {
-                            context
-                                .read<HomeBloc>()
-                                .add(ChangeEditListEvent(!state.editList));
-                          },
-                          child: Text(
-                            state.editList
-                                ? lang.get('public.done')
-                                : lang.get('public.edit'),
-                            style: TextStyle(
-                              color: MacosTheme.of(context).primaryColor,
+                        MacosTooltip(
+                          message: lang.get('home.add_btn_tooltip'),
+                          child: const HostsAddWidget(),
+                        ),
+                        MacosTooltip(
+                          message: lang.get('home.edit_tooltip'),
+                          child: InkWell(
+                            onTap: () {
+                              context
+                                  .read<HomeBloc>()
+                                  .add(ChangeEditListEvent(!state.editList));
+                            },
+                            child: Text(
+                              state.editList
+                                  ? lang.get('public.done')
+                                  : lang.get('public.edit'),
+                              style: TextStyle(
+                                color: MacosTheme.of(context).primaryColor,
+                              ),
                             ),
                           ),
                         ),

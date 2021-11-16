@@ -25,16 +25,25 @@
         "del_hosts_title": "删除hosts配置",
         "del_hosts_message": "确定删除这个hosts配置？",
         "show_edit_hosts": "编辑hosts配置",
-        "icon_tooltip": "hosts文件管理工具"
+        "icon_tooltip": "hosts文件管理工具",
+        "save_hosts_ok": "保存hosts配置成功",
+        "save_hosts_err": "保存hosts配置错误",
+        "edit_tooltip": "点击编辑显示删除配置按钮",
+        "add_btn_tooltip": "点击添加hosts配置",
+        "show_hosts_tooltip": "点击查看当前系统hosts文件",
+        "switch_hosts_tooltip": "切换当前hosts配置是否启用",
+        "switch_main_menu_tooltip": "点击切换左侧主菜单隐藏显示"
     },
     "dns": {
         "title": "本地DNS代理"
     },
-    "theme": {
-        "title": "主题"
-    },
-    "lang": {
-        "title": "语言"
+    "settings": {
+        "title": "设置",
+        "theme_title": "主题：",
+        "lang_title": "语言：",
+        "theme_auto": "自动",
+        "theme_light": "浅色",
+        "theme_dark": "深色"
     },
     "about": {
         "title": "关于"

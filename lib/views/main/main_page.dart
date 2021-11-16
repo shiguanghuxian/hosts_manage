@@ -7,10 +7,10 @@ import 'package:hosts_manage/store/store.dart';
 import 'package:hosts_manage/views/about/about_page.dart';
 import 'package:hosts_manage/views/dns/dns_page.dart';
 import 'package:hosts_manage/views/home/home_page.dart';
-import 'package:hosts_manage/views/lang/lang_page.dart';
-import 'package:hosts_manage/views/theme/theme_page.dart';
+import 'package:hosts_manage/views/settings/settings_page.dart';
 import 'package:macos_ui/macos_ui.dart';
 import 'package:proste_indexed_stack/proste_indexed_stack.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key key}) : super(key: key);
@@ -42,10 +42,7 @@ class _MainPageState extends State<MainPage> {
       child: const DNSPage(),
     ),
     IndexedStackChild(
-      child: const ThemePage(),
-    ),
-    IndexedStackChild(
-      child: const LangPage(),
+      child: const SettingsPage(),
     ),
     IndexedStackChild(
       child: const AboutPage(),
@@ -70,12 +67,18 @@ class _MainPageState extends State<MainPage> {
         ),
         sidebar: Sidebar(
           minWidth: 180,
-          bottom: const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: MacosListTile(
-              leading: MacosIcon(CupertinoIcons.profile_circled),
-              title: Text('时光弧线'),
-              subtitle: Text('zuoxiupeng@live.com'),
+          bottom: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: MacosTooltip(
+              message: '点击查看作者开源主页',
+              child: MacosListTile(
+                onClick: () {
+                  launch('https://github.com/shiguanghuxian');
+                },
+                leading: const MacosIcon(CupertinoIcons.profile_circled),
+                title: const Text('时光弧线'),
+                subtitle: const Text('zuoxiupeng@live.com'),
+              ),
             ),
           ),
           builder: (context, controller) {
@@ -87,36 +90,40 @@ class _MainPageState extends State<MainPage> {
                 SidebarItem(
                   leading: MacosIcon(
                     CupertinoIcons.home,
-                    color: MacosTheme.of(context).typography.title1.color,
+                    color: pageIndex == 0
+                        ? Colors.white
+                        : MacosTheme.of(context).typography.largeTitle.color,
+                    size: 18,
                   ),
                   label: Text(lang.get('home.title')),
                 ),
                 SidebarItem(
                   leading: MacosIcon(
                     CupertinoIcons.personalhotspot,
-                    color: MacosTheme.of(context).typography.title1.color,
+                    color: pageIndex == 1
+                        ? Colors.white
+                        : MacosTheme.of(context).typography.largeTitle.color,
+                    size: 18,
                   ),
                   label: Text(lang.get('dns.title')),
                 ),
                 SidebarItem(
                   leading: MacosIcon(
-                    // Icons.auto_graph_sharp
-                    CupertinoIcons.rectangle_on_rectangle,
-                    color: MacosTheme.of(context).typography.title1.color,
+                    CupertinoIcons.settings,
+                    color: pageIndex == 2
+                        ? Colors.white
+                        : MacosTheme.of(context).typography.largeTitle.color,
+                    size: 18,
                   ),
-                  label: Text(lang.get('theme.title')),
-                ),
-                SidebarItem(
-                  leading: MacosIcon(
-                    CupertinoIcons.textformat_abc,
-                    color: MacosTheme.of(context).typography.title1.color,
-                  ),
-                  label: Text(lang.get('lang.title')),
+                  label: Text(lang.get('settings.title')),
                 ),
                 SidebarItem(
                   leading: MacosIcon(
                     CupertinoIcons.umbrella,
-                    color: MacosTheme.of(context).typography.title1.color,
+                    color: pageIndex == 3
+                        ? Colors.white
+                        : MacosTheme.of(context).typography.largeTitle.color,
+                    size: 18,
                   ),
                   label: Text(lang.get('about.title')),
                 ),

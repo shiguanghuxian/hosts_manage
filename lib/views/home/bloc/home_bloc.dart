@@ -231,7 +231,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
     } catch (e) {
       log('初始化hosts配置列表错误 ${e.toString()}');
-      EasyLoading.showError('首次启动遇到错误，请备份你的hosts文件\n错误：' + e.toString());
+      EasyLoading.showError('The first startup encountered an error. Please back up your hosts file\nerror：' + e.toString());
     }
     return hostsList;
   }

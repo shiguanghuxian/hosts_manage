@@ -34,12 +34,16 @@ class _HomeEditState extends State<HomeEdit> {
       text: '',
       language: python,
       theme: githubTheme,
+      onChange: _onChange,
     );
   }
 
+  I18N lang;
   HomeBloc _homeBloc;
   CodeController _codeController;
   bool _showSave = true;
+  String _content = ''; // 加载新hosts时的值
+  String _newContent = ''; // 实时编辑hosts值
 
   @override
   void dispose() {
@@ -47,11 +51,43 @@ class _HomeEditState extends State<HomeEdit> {
     super.dispose();
   }
 
+  // 编辑内容变化时
+  void _onChange(String val) {
+    log('内容变化 ${val}');
+    setState(() {
+      _newContent = val;
+    });
+  }
+
+  // 保存右侧内容
+  _saveHostsContent() async {
+    if (_homeBloc.state.showHosts == '' || _codeController.text == null) {
+      return;
+    }
+    try {
+      Directory libDir = await getLibraryDirectory();
+      // 删除文件
+      File hostsPath =
+          File(libDir.path + "/" + _homeBloc.state.showHosts + ".json");
+      log('保存文件路径 ${hostsPath.path}');
+      hostsPath.writeAsStringSync(_codeController.text, flush: true);
+
+      setState(() {
+        _content = _newContent;
+      });
+      EasyLoading.showInfo(lang.get('home.save_hosts_ok'));
+    } catch (e) {
+      log('保存文件错误 ${e.toString()}');
+      EasyLoading.showInfo(lang.get('home.save_hosts_err'));
+    }
+    return;
+  }
+
   @override
   Widget build(BuildContext context) {
     return StoreBuilder<ZState>(
       builder: (context, store) {
-        I18N lang = StoreProvider.of<ZState>(context).state.lang;
+        lang = StoreProvider.of<ZState>(context).state.lang;
         return BlocListener<HomeBloc, HomeState>(
           listenWhen: (HomeState previous, HomeState current) {
             return previous.showHosts != current.showHosts;
@@ -85,6 +121,8 @@ class _HomeEditState extends State<HomeEdit> {
               } else {
                 _codeController.text = '';
               }
+              _content = _codeController.text;
+              _newContent = _content;
             } catch (e) {
               log('读取hosts配置内容错误 ${e.toString()}');
             }
@@ -93,7 +131,7 @@ class _HomeEditState extends State<HomeEdit> {
             children: [
               SizedBox(
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height - 65,
+                height: MediaQuery.of(context).size.height - 53,
                 child: CodeField(
                   wrap: true,
                   lineNumberStyle: LineNumberStyle(
@@ -111,30 +149,36 @@ class _HomeEditState extends State<HomeEdit> {
               Positioned(
                 right: 10,
                 bottom: 10,
-                child: _showSave
-                    ? Container(
-                        width: 50,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          color: MacosTheme.of(context).primaryColor,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(15)),
-                          boxShadow: [
-                            BoxShadow(
-                                color: MacosTheme.of(context)
-                                    .primaryColor
-                                    .withAlpha(60),
-                                offset: const Offset(3.0, 3.0),
-                                blurRadius: 10.0,
-                                spreadRadius: 1.0)
-                          ],
-                        ),
-                        child: Center(
-                          child: Text(
-                            lang.get('public.save'),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
+                child: _showSave && _content != _newContent
+                    ? InkWell(
+                        onTap: () {
+                          // 保存修改
+                          _saveHostsContent();
+                        },
+                        child: Container(
+                          width: 50,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            color: MacosTheme.of(context).primaryColor,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(15)),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: MacosTheme.of(context)
+                                      .primaryColor
+                                      .withAlpha(60),
+                                  offset: const Offset(3.0, 3.0),
+                                  blurRadius: 10.0,
+                                  spreadRadius: 1.0)
+                            ],
+                          ),
+                          child: Center(
+                            child: Text(
+                              lang.get('public.save'),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
                             ),
                           ),
                         ),

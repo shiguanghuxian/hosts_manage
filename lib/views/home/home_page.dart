@@ -45,15 +45,18 @@ class _HomePageState extends State<HomePage> {
           titleBar: TitleBar(
             title: Text(lang.get('home.title')),
             actions: [
-              MacosIconButton(
-                backgroundColor: MacosColors.transparent,
-                icon: const MacosIcon(
-                  CupertinoIcons.sidebar_left,
-                  color: MacosColors.systemGrayColor,
+              MacosTooltip(
+                message: lang.get('home.switch_main_menu_tooltip'),
+                child: MacosIconButton(
+                  backgroundColor: MacosColors.transparent,
+                  icon: const MacosIcon(
+                    CupertinoIcons.sidebar_left,
+                    color: MacosColors.systemGrayColor,
+                  ),
+                  onPressed: () {
+                    MacosWindowScope.of(context).toggleSidebar();
+                  },
                 ),
-                onPressed: () {
-                  MacosWindowScope.of(context).toggleSidebar();
-                },
               ),
               const SizedBox(width: 10),
             ],
@@ -82,7 +85,6 @@ class _HomePageState extends State<HomePage> {
               },
             ),
           ],
-          // floatingActionButton: HomePublishBtn(),// 这里可放编辑
         ),
       );
     });

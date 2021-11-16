@@ -25,16 +25,25 @@
         "del_hosts_title": "Del hosts configuration",
         "del_hosts_message": "Are you sure to delete this hosts configuration?",
         "show_edit_hosts": "Edit hosts configuration",
-        "icon_tooltip": "Hosts file management tool"
+        "icon_tooltip": "Hosts file management tool",
+        "save_hosts_ok": "Successfully saved hosts configuration",
+        "save_hosts_err": "Saving hosts configuration error",
+        "edit_tooltip": "Click the edit display delete configuration button",
+        "add_btn_tooltip": "Click Add hosts configuration",
+        "show_hosts_tooltip": "Click to view the current system hosts file",
+        "switch_hosts_tooltip": "Toggles whether the current hosts configuration is enabled",
+        "switch_main_menu_tooltip": "Click to switch the left main menu hidden"
     },
     "dns": {
         "title": "Local DNS proxy"
     },
-    "theme": {
-        "title": "Theme"
-    },
-    "lang": {
-        "title": "Lang"
+    "settings": {
+        "title": "Settings",
+        "theme_title": "Theme",
+        "lang_title": "Lang",
+        "theme_auto": "Auto",
+        "theme_light": "Light",
+        "theme_dark": "Dark"
     },
     "about": {
         "title": "About"

@@ -60,7 +60,7 @@ class _DNSPageState extends State<DNSPage> {
               return SingleChildScrollView(
                 padding: const EdgeInsets.all(20),
                 controller: scrollController,
-                child: Container(
+                child: Center(
                   child: Text('DNS'),
                 ),
               );

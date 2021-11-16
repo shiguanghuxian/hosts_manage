@@ -75,7 +75,7 @@ class _HostsListWidgetState extends State<HostsListWidget> {
                           },
                         ),
                         secondaryButton: PushButton(
-                          color: Colors.redAccent[400],
+                          color: Colors.red[400],
                           buttonSize: ButtonSize.large,
                           child: Text(lang.get('public.confirm')),
                           onPressed: () {
@@ -98,15 +98,18 @@ class _HostsListWidgetState extends State<HostsListWidget> {
                   ),
                 );
               } else {
-                trailing = Transform.scale(
-                  scale: 0.7,
-                  child: MacosSwitch(
-                    value: widget.hostsInfoModel.check,
-                    onChanged: (value) {
-                      log('点击 ${value} -- ${widget.hostsInfoModel.isBaseHosts}');
-                      context.read<HomeBloc>().add(ChangeSelectedHostsEvent(
-                          widget.hostsInfoModel.key, value));
-                    },
+                trailing = MacosTooltip(
+                  message: lang.get('home.switch_hosts_tooltip'),
+                  child: Transform.scale(
+                    scale: 0.7,
+                    child: MacosSwitch(
+                      value: widget.hostsInfoModel.check,
+                      onChanged: (value) {
+                        log('点击 ${value} -- ${widget.hostsInfoModel.isBaseHosts}');
+                        context.read<HomeBloc>().add(ChangeSelectedHostsEvent(
+                            widget.hostsInfoModel.key, value));
+                      },
+                    ),
                   ),
                 );
               }
