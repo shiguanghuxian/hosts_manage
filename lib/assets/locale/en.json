@@ -18,7 +18,7 @@
         "base_hosts_toast": "Operation not allowed for basic configuration",
         "show_system_hosts": "View system hosts",
         "read_hosts_file_err": "Error reading corresponding hosts configuration content",
-        "name_exists":"Name already exists",
+        "name_exists": "Name already exists",
         "name_is_empty": "Name cannot be empty",
         "add_hosts_title": "Add hosts configuration",
         "add_hosts_placeholder": "Please enter a name",
@@ -35,7 +35,14 @@
         "switch_main_menu_tooltip": "Click to switch the left main menu hidden"
     },
     "dns": {
-        "title": "Local DNS proxy"
+        "title": "Local DNS proxy",
+        "start": "Start",
+        "stop": "Stop",
+        "server_title": "DNS Server",
+        "auto_start": "auto start dns server",
+        "auto_start_label": "The software starts running the DNS proxy",
+        "local_ip_title": "Local DNS address",
+        "local_ip_copy_tooltip": "Click Copy DNS proxy address"
     },
     "settings": {
         "title": "Settings",

@@ -35,7 +35,14 @@
         "switch_main_menu_tooltip": "点击切换左侧主菜单隐藏显示"
     },
     "dns": {
-        "title": "本地DNS代理"
+        "title": "本地DNS代理",
+        "start": "启动",
+        "stop": "停止",
+        "server_title": "DNS服务器",
+        "auto_start": "自动启动DNS代理",
+        "auto_start_label": "软件启动运行DNS代理",
+        "local_ip_title": "本机DNS地址",
+        "local_ip_copy_tooltip": "点击复制DNS代理地址"
     },
     "settings": {
         "title": "设置",

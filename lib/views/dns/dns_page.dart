@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,6 +7,10 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:hosts_manage/i18n/i18n.dart';
 import 'package:hosts_manage/store/store.dart';
 import 'package:hosts_manage/views/dns/bloc/dns_bloc.dart';
+import 'package:hosts_manage/views/dns/widgets/dns_action_button.dart';
+import 'package:hosts_manage/views/dns/widgets/dns_auto_start.dart';
+import 'package:hosts_manage/views/dns/widgets/dns_local_ip.dart';
+import 'package:hosts_manage/views/dns/widgets/dns_server.dart';
 import 'package:macos_ui/macos_ui.dart';
 
 // 本地DNS代理
@@ -60,13 +66,79 @@ class _DNSPageState extends State<DNSPage> {
               return SingleChildScrollView(
                 padding: const EdgeInsets.all(20),
                 controller: scrollController,
-                child: Center(
-                  child: Text('DNS'),
+                child: Stack(
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height - 80,
+                      child: Center(
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              width: 400,
+                              child: MacosListTile(
+                                leading: SizedBox(
+                                  width: 120,
+                                  child: Text(
+                                    lang.get('dns.auto_start'),
+                                    style: MacosTheme.of(context)
+                                        .typography
+                                        .title3,
+                                  ),
+                                ),
+                                title: DnsAutoStart(),
+                              ),
+                            ),
+                            const Divider(
+                              height: 30,
+                            ),
+                            SizedBox(
+                              width: 400,
+                              child: MacosListTile(
+                                leading: SizedBox(
+                                  width: 120,
+                                  child: Text(
+                                    lang.get('dns.local_ip_title'),
+                                    style: MacosTheme.of(context)
+                                        .typography
+                                        .title3,
+                                  ),
+                                ),
+                                title: DnsLocalIp(),
+                              ),
+                            ),
+                            const Divider(
+                              height: 30,
+                            ),
+                            SizedBox(
+                              width: 400,
+                              child: MacosListTile(
+                                leading: SizedBox(
+                                  width: 120,
+                                  child: Text(
+                                    lang.get('dns.server_title'),
+                                    style: MacosTheme.of(context)
+                                        .typography
+                                        .title3,
+                                  ),
+                                ),
+                                title: DnsServer(),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Positioned(
+                      right: 10,
+                      bottom: 10,
+                      child: DnsActionButton(),
+                    )
+                  ],
                 ),
               );
             }),
           ],
-          // floatingActionButton: HomePublishBtn(),// 这里可放dns启动。。。
         ),
       );
     });

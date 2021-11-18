@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   native_context_menu
+  r_get_ip
   system_tray
   url_launcher_windows
 )
