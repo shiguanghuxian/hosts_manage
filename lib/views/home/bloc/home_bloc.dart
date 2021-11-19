@@ -8,6 +8,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hosts_manage/i18n/i18n.dart';
 import 'package:hosts_manage/models/hosts_info_model.dart';
+import 'package:hosts_manage/views/common/common.dart';
 import 'package:path_provider/path_provider.dart';
 
 part "home_event.dart";
@@ -44,11 +45,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       hostsList.add(item);
     }
     // 更新本地hosts配置列表
-    Directory libDir = await getLibraryDirectory();
-    File hostsFile = File(libDir.path + "/" + "hosts.json");
-    hostsFile.writeAsString(json.encode(hostsList)); // 写入默认列表
+    File hostsFile = await getHostsJsonFile();
+    await hostsFile.writeAsString(json.encode(hostsList),
+        flush: true); // 写入默认列表
 
-    // TODO 更新hosts 或刷新dns服务
+    // 更新hosts 或刷新dns服务
+    await saveHostsToSystem(); // 本地hosts文件
+    await syncDataDnsProxy(); // dns代理
 
     log('需要更新hosts');
     return state.copyWith(
@@ -60,13 +63,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   /// 初始化hosts配置列表
   Future<HomeState> _mapInitHostsList(
       InitHostsListEvent event, HomeState state) async {
+    if (event.lang == null || event.lang.get("public.app_name") == '') {
+      return state;
+    }
     List<HostsInfoModel> hostsList = [];
     try {
-      Directory libDir = await getLibraryDirectory();
-      if (libDir != null) {
-        log('存储路径 ${libDir.path}');
+      String rootPath = await getAppRootDirectory();
+      if (rootPath != null) {
+        log('存储路径 $rootPath');
         // 列表缓存目录
-        File hostsFile = File(libDir.path + "/" + "hosts.json");
+        File hostsFile = await getHostsJsonFile();
         // 不存在则创建
         if (!hostsFile.existsSync()) {
           hostsList = await _firstStartApp(event.lang);
@@ -81,13 +87,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         }
       }
     } catch (e) {
-      log('初始化hosts配置列表错误 ${e.toString()}');
+      log('初始化hosts配置列表错误1 ${e.toString()}');
       EasyLoading.showError(e.toString());
     }
 
     String showHosts = '';
     for (var item in hostsList) {
-      if (item.isBaseHosts) {
+      if (item.isBaseHosts == true) {
         showHosts = item.key;
         break;
       }
@@ -123,8 +129,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     List<HostsInfoModel> hostsList = state.hostsList;
     // 写入基本数据
     String key = _generateSha1(event.name);
-    Directory libDir = await getLibraryDirectory();
-    File hostsPath = File(libDir.path + "/" + key + ".json");
+    File hostsPath = await getHostsConfFile(key);
     if (hostsPath.existsSync()) {
       EasyLoading.showError('文件已存在！！！');
       return state;
@@ -140,7 +145,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     ));
 
     // 更新hosts配置列表
-    File hostsFile = File(libDir.path + "/" + "hosts.json");
+    File hostsFile = await getHostsJsonFile();
     hostsFile.writeAsString(json.encode(hostsList)); // 写入默认列表
 
     return state.copyWith(
@@ -158,9 +163,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       showHosts = '';
     }
 
-    Directory libDir = await getLibraryDirectory();
     // 删除文件
-    File hostsPath = File(libDir.path + "/" + event.key + ".json");
+    File hostsPath = await getHostsConfFile(event.key);
     hostsPath.deleteSync();
     // 从列表删除
     List<HostsInfoModel> hostsList = [];
@@ -171,7 +175,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
 
     // 更新hosts配置列表
-    File hostsFile = File(libDir.path + "/" + "hosts.json");
+    File hostsFile = await getHostsJsonFile();
     hostsFile.writeAsString(json.encode(hostsList)); // 写入默认列表
 
     return state.copyWith(
@@ -185,8 +189,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<List<HostsInfoModel>> _firstStartApp(I18N lang) async {
     List<HostsInfoModel> hostsList = [];
     try {
-      Directory libDir = await getLibraryDirectory();
-      File hostsFile = File(libDir.path + "/" + "hosts.json");
+      File hostsFile = await getHostsJsonFile();
       // 不存在则创建
       if (!hostsFile.existsSync()) {
         await hostsFile.create();
@@ -194,15 +197,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         log('不存在列表记录，备份系统hosts，并创建一条');
         String backupName = lang.get('home.backup_hosts');
         File systemFile = File('/etc/hosts');
-        File backupFile = await systemFile
-            .copy(libDir.path + "/" + _generateSha1(backupName) + ".json");
+        String backupFilePath =
+            await getHostsConfFilePath(_generateSha1(backupName));
+        File backupFile = await systemFile.copy(backupFilePath);
         log('backupFile 路径 ${backupFile.path} 系统hosts备份后内容 ${backupFile.readAsStringSync()}');
 
         // 基础hosts配置
         String baseName = lang.get('home.base_hosts');
 
-        File baseFile =
-            File(libDir.path + "/" + _generateSha1(baseName) + ".json");
+        File baseFile = await getHostsConfFile(_generateSha1(baseName));
+
         baseFile.writeAsString('''##
 # Host Database
 #
@@ -230,8 +234,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         hostsFile.writeAsString(json.encode(hostsList)); // 写入默认列表
       }
     } catch (e) {
-      log('初始化hosts配置列表错误 ${e.toString()}');
-      EasyLoading.showError('The first startup encountered an error. Please back up your hosts file\nerror：' + e.toString());
+      log('初始化hosts配置列表错误2 ${e.toString()}');
+      EasyLoading.showError(
+          'The first startup encountered an error. Please back up your hosts file\nerror：' +
+              e.toString());
     }
     return hostsList;
   }

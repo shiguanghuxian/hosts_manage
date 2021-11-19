@@ -11,7 +11,9 @@ import 'package:hosts_manage/views/dns/widgets/dns_action_button.dart';
 import 'package:hosts_manage/views/dns/widgets/dns_auto_start.dart';
 import 'package:hosts_manage/views/dns/widgets/dns_local_ip.dart';
 import 'package:hosts_manage/views/dns/widgets/dns_server.dart';
+import 'package:hosts_manage/views/dns/widgets/dns_tooltip.dart';
 import 'package:macos_ui/macos_ui.dart';
+import 'package:open/open.dart';
 
 // 本地DNS代理
 class DNSPage extends StatefulWidget {
@@ -124,6 +126,13 @@ class _DNSPageState extends State<DNSPage> {
                                 ),
                                 title: DnsServer(),
                               ),
+                            ),
+                            const Divider(
+                              height: 30,
+                            ),
+                            const SizedBox(
+                              width: 500,
+                              child: DnsTooltip(),
                             ),
                           ],
                         ),

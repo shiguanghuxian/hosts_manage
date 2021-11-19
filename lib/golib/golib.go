@@ -59,6 +59,9 @@ func SetPublicDnsServer(str *string) {
 	addrs := make([]string, 0)
 	for _, v := range strList {
 		v = strings.TrimSpace(v)
+		if strings.HasPrefix(v, "#") {
+			continue
+		}
 		if v != "" {
 			addrs = append(addrs, v)
 		}

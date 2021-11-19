@@ -2,20 +2,23 @@ part of 'dns_bloc.dart';
 
 class DNSState extends Equatable {
   const DNSState({
-    this.index = 0,
+    this.localDnsAddr = '127.0.0.1:53',
+    this.dnsServers = '',
   });
 
-  final int index;
+  final String localDnsAddr;
+  final String dnsServers;
 
   DNSState copyWith({
-    int index,
+    String localDnsAddr,
+    String dnsServers,
   }) {
     return DNSState(
-      index: index ?? this.index,
+      localDnsAddr: localDnsAddr ?? this.localDnsAddr,
+      dnsServers: dnsServers ?? this.dnsServers,
     );
   }
 
   @override
-  List<Object> get props =>
-      [index];
+  List<Object> get props => [localDnsAddr, dnsServers];
 }

@@ -42,7 +42,11 @@
         "auto_start": "自动启动DNS代理",
         "auto_start_label": "软件启动运行DNS代理",
         "local_ip_title": "本机DNS地址",
-        "local_ip_copy_tooltip": "点击复制DNS代理地址"
+        "local_ip_copy_tooltip": "点击复制DNS代理地址",
+        "tooltip": "在Hosts管理页面配置好各个分组的hosts后，点击右下角启动代理后，可将上述本机DNS代理地址添加到系统DNS配置第一个。之后网站访问域名dns解析将会是hosts配置的ip。如果在同一个网络手机等设备也可以配置为此DNS地址。如果上述第三项DNS服务器未配置，请在系统DNS页面配置多个DNS服务器地址，并确保上述第二项本地DNS地址为第一个。",
+        "open_preference": "打开偏好设置",
+        "copied": "复制成功",
+        "server_tooltip": "点击重启dns后会保存此配置"
     },
     "settings": {
         "title": "设置",

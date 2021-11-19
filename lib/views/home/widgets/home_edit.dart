@@ -8,7 +8,9 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:hosts_manage/i18n/i18n.dart';
 import 'package:hosts_manage/models/const.dart';
+import 'package:hosts_manage/models/hosts_info_model.dart';
 import 'package:hosts_manage/store/store.dart';
+import 'package:hosts_manage/views/common/common.dart';
 import 'package:hosts_manage/views/home/bloc/home_bloc.dart';
 import 'package:macos_ui/macos_ui.dart';
 import 'package:flutter_highlight/themes/github.dart';
@@ -65,10 +67,8 @@ class _HomeEditState extends State<HomeEdit> {
       return;
     }
     try {
-      Directory libDir = await getLibraryDirectory();
       // 删除文件
-      File hostsPath =
-          File(libDir.path + "/" + _homeBloc.state.showHosts + ".json");
+      File hostsPath = await getHostsConfFile(_homeBloc.state.showHosts);
       log('保存文件路径 ${hostsPath.path}');
       hostsPath.writeAsStringSync(_codeController.text, flush: true);
 
@@ -76,6 +76,19 @@ class _HomeEditState extends State<HomeEdit> {
         _content = _newContent;
       });
       EasyLoading.showInfo(lang.get('home.save_hosts_ok'));
+      // 更新hosts 或刷新dns服务
+      // 当前编辑配置是打开时才重启
+      bool isCheck = false;
+      for (HostsInfoModel item in _homeBloc.state.hostsList) {
+        if (item.key == _homeBloc.state.showHosts) {
+          isCheck = item.check;
+          break;
+        }
+      }
+      if (isCheck == true) {
+        await saveHostsToSystem(); // 本地hosts文件
+        await syncDataDnsProxy(); // dns代理
+      }
     } catch (e) {
       log('保存文件错误 ${e.toString()}');
       EasyLoading.showInfo(lang.get('home.save_hosts_err'));
@@ -90,7 +103,8 @@ class _HomeEditState extends State<HomeEdit> {
         lang = StoreProvider.of<ZState>(context).state.lang;
         return BlocListener<HomeBloc, HomeState>(
           listenWhen: (HomeState previous, HomeState current) {
-            return previous.showHosts != current.showHosts;
+            return previous.showHosts != current.showHosts ||
+                previous.changeHostList != current.changeHostList;
           },
           listener: (BuildContext context, HomeState state) async {
             log('更新右侧编辑区内容 - ${state.showHosts}');
@@ -99,13 +113,13 @@ class _HomeEditState extends State<HomeEdit> {
             // 文件不存在
             if (state.showHosts == '') {
               showSave = false;
-            } else if (state.showHosts == ModelConst.systemShowHosts) {
+            } else if (state.showHosts.startsWith(ModelConst.systemShowHosts)) {
               // 显示系统hosts
               hostsPath = File('/etc/hosts');
               showSave = false;
             } else {
-              Directory libDir = await getLibraryDirectory();
-              hostsPath = File(libDir.path + "/" + state.showHosts + ".json");
+              hostsPath = await getHostsConfFile(state.showHosts);
+
               if (!hostsPath.existsSync()) {
                 EasyLoading.showError(lang.get('home.read_hosts_file_err'));
               }

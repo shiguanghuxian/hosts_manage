@@ -87,7 +87,7 @@ class _HomeHostsListState extends State<HomeHostsList> {
 
     final List<system_tray.MenuItemBase> menu = [];
     for (HostsInfoModel item in _homeBloc.state.hostsList) {
-      if (item.isBaseHosts) {
+      if (item.isBaseHosts == true) {
         continue;
       }
       menu.add(
@@ -113,11 +113,11 @@ class _HomeHostsListState extends State<HomeHostsList> {
       builder: (context, store) {
         lang = StoreProvider.of<ZState>(context).state.lang;
         // 防止重复初始化顶部菜单
-        if(!isInitSystemTray) {
+        if (!isInitSystemTray) {
           initSystemTray();
           isInitSystemTray = true;
         }
-        
+
         return BlocBuilder<HomeBloc, HomeState>(
           buildWhen: (previous, current) {
             return previous.changeHostList != current.changeHostList;
@@ -146,8 +146,11 @@ class _HomeHostsListState extends State<HomeHostsList> {
                     message: lang.get('home.show_hosts_tooltip'),
                     child: PushButton(
                       onPressed: () {
-                        context.read<HomeBloc>().add(const ChangeShowHostsEvent(
-                            ModelConst.systemShowHosts));
+                        context.read<HomeBloc>().add(ChangeShowHostsEvent(
+                            ModelConst.systemShowHosts +
+                                DateTime.now()
+                                    .millisecondsSinceEpoch
+                                    .toString()));
                       },
                       color: MacosTheme.of(context).primaryColor,
                       buttonSize: ButtonSize.large,

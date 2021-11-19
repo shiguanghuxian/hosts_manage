@@ -10,15 +10,25 @@ class DNSBloc extends Bloc<DNSEvent, DNSState> {
 
   @override
   Stream<DNSState> mapEventToState(DNSEvent event) async* {
-    if (event is ChangeChannelEvent) {
-      yield _mapChangeChannel(event, state);
+    if (event is ChangeLocalDnsAddrEvent) {
+      yield _mapChangeLocalDnsAddr(event, state);
+    } else if (event is ChangeDnsServersEvent) {
+      yield _mapChangeDnsServers(event, state);
     }
   }
 
-  //
-  DNSState _mapChangeChannel(ChangeChannelEvent event, DNSState state) {
+  // 设置本机dns代理地址
+  DNSState _mapChangeLocalDnsAddr(
+      ChangeLocalDnsAddrEvent event, DNSState state) {
     return state.copyWith(
-      index: event.index,
+      localDnsAddr: event.localDnsAddr,
+    );
+  }
+
+  // 保存公网dns服务配置列表
+  DNSState _mapChangeDnsServers(ChangeDnsServersEvent event, DNSState state) {
+    return state.copyWith(
+      dnsServers: event.dnsServers,
     );
   }
 }

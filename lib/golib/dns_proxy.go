@@ -76,6 +76,7 @@ func (dp *DnsProxy) Start() {
 
 // Stop 停止服务
 func (dp *DnsProxy) Stop() {
+	dp.isStart = false
 	if dp.udpService == nil {
 		return
 	}

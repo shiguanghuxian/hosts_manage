@@ -11,6 +11,7 @@ import 'package:hosts_manage/golib/godart.dart';
 import 'package:hosts_manage/golib/golib.dart';
 import 'package:hosts_manage/i18n/i18n.dart';
 import 'package:hosts_manage/store/store.dart';
+import 'package:hosts_manage/views/common/common.dart';
 import 'package:hosts_manage/views/dns/bloc/dns_bloc.dart';
 import 'package:macos_ui/macos_ui.dart';
 import 'package:r_get_ip/r_get_ip.dart';
@@ -30,8 +31,11 @@ class _DnsActionButtonState extends State<DnsActionButton> {
   void initState() {
     super.initState();
     _initIsRun();
+    _dnsBloc = context.read<DNSBloc>();
+    _getLocalIP();
   }
 
+  DNSBloc _dnsBloc;
   I18N lang;
   bool isRun = false;
 
@@ -58,18 +62,23 @@ class _DnsActionButtonState extends State<DnsActionButton> {
   }
 
   /// 启动dns代理
-  void _startDns() {
-    setAddressBookDNS(GoString.fromString("127.0.0.1 www.baidu.com"));
-    setPublicDnsServerDNS(GoString.fromString('8.8.8.8'));
+  void _startDns() async {
+    // 设置hosts域名ip映射
+    String hostsBody = await getAllHostsVal();
+    setAddressBookDNS(GoString.fromString(hostsBody));
+    // 设置公网上层dns服务
+    String dnsServerBody = await readPublicDNSServer();
+    setPublicDnsServerDNS(GoString.fromString(dnsServerBody));
+    // 启动服务
     startDNS();
     setState(() {
       isRun = true;
     });
     _getLocalIP();
-    // 等半分钟，看一下是否启动错误
+    // 等半秒钟，看一下是否启动错误
     Future.delayed(const Duration(milliseconds: 500), () async {
       Pointer<Int8> errPrt = getErr();
-      
+
       String errStr = errPrt.cast<Utf8>().toDartString();
       log('启动错误信息 ${errStr}');
       if (errStr != null && errStr != '') {
@@ -83,6 +92,7 @@ class _DnsActionButtonState extends State<DnsActionButton> {
   /// 获取本机IP
   _getLocalIP() async {
     String ip = await RGetIp.internalIP;
+    _dnsBloc.add(ChangeLocalDnsAddrEvent("$ip:53"));
     log('内网ip ${ip}');
   }
 
@@ -93,7 +103,7 @@ class _DnsActionButtonState extends State<DnsActionButton> {
         lang = StoreProvider.of<ZState>(context).state.lang;
         return BlocBuilder<DNSBloc, DNSState>(
           buildWhen: (previous, current) {
-            return false;
+            return previous.dnsServers != current.dnsServers;
           },
           builder: (context, state) {
             return InkWell(
@@ -101,6 +111,7 @@ class _DnsActionButtonState extends State<DnsActionButton> {
                 // 启动停止dns服务
                 if (isRun) {
                   _stopDNS();
+                  savePublicDNSServer(state.dnsServers);
                 } else {
                   _startDns();
                 }
@@ -109,12 +120,15 @@ class _DnsActionButtonState extends State<DnsActionButton> {
                 width: 50,
                 height: 50,
                 decoration: BoxDecoration(
-                  color: MacosTheme.of(context).primaryColor,
+                  color: isRun
+                      ? Colors.red[400]
+                      : MacosTheme.of(context).primaryColor,
                   borderRadius: const BorderRadius.all(Radius.circular(25)),
                   boxShadow: [
                     BoxShadow(
-                        color:
-                            MacosTheme.of(context).primaryColor.withAlpha(60),
+                        color: isRun
+                            ? Colors.red[400].withAlpha(60)
+                            : MacosTheme.of(context).primaryColor.withAlpha(60),
                         offset: const Offset(3.0, 3.0),
                         blurRadius: 10.0,
                         spreadRadius: 1.0)

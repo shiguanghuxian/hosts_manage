@@ -4,15 +4,28 @@ abstract class DNSEvent extends Equatable {
   const DNSEvent();
 }
 
-// 
-class ChangeChannelEvent extends DNSEvent {
-  final int index;
+// 设置本机dns代理地址
+class ChangeLocalDnsAddrEvent extends DNSEvent {
+  final String localDnsAddr;
 
-  const ChangeChannelEvent(this.index);
-
-  @override
-  List<Object> get props => [index];
+  const ChangeLocalDnsAddrEvent(this.localDnsAddr);
 
   @override
-  String toString() => 'ChangeChannelEvent { tab: $index }';
+  List<Object> get props => [localDnsAddr];
+
+  @override
+  String toString() => 'ChangeLocalDnsAddrEvent { $localDnsAddr }';
+}
+
+// 保存公网dns服务配置列表
+class ChangeDnsServersEvent extends DNSEvent {
+  final String dnsServers;
+
+  const ChangeDnsServersEvent(this.dnsServers);
+
+  @override
+  List<Object> get props => [dnsServers];
+
+  @override
+  String toString() => 'ChangeDnsServersEvent { $dnsServers }';
 }
