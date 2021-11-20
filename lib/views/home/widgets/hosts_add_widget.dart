@@ -61,7 +61,7 @@ class _HostsAddWidgetState extends State<HostsAddWidget> {
                       style: MacosTheme.of(context).typography.headline,
                     ),
                     message: Container(
-                      margin: EdgeInsets.only(bottom: 8),
+                      margin: const EdgeInsets.only(bottom: 8),
                       child: Column(
                         children: [
                           Container(

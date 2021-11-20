@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
               builder: (context, scrollController) {
                 return SingleChildScrollView(
                   controller: scrollController,
-                  child: HomeHostsList(),
+                  child: const HomeHostsList(),
                 );
               },
             ),
@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
                 return SingleChildScrollView(
                   padding: const EdgeInsets.all(0),
                   controller: scrollController,
-                  child: HomeEdit(),
+                  child: const HomeEdit(),
                 );
               },
             ),

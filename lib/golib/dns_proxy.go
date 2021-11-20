@@ -118,7 +118,7 @@ func (dp *DnsProxy) ServeDNS(w dns.ResponseWriter, msg *dns.Msg) {
 					Name:   question.Name,
 					Rrtype: dns.TypeA,
 					Class:  dns.ClassINET,
-					Ttl:    600,
+					Ttl:    60,
 				},
 				A: net.ParseIP(ipStr),
 			})
@@ -130,7 +130,7 @@ func (dp *DnsProxy) ServeDNS(w dns.ResponseWriter, msg *dns.Msg) {
 					Name:   question.Name,
 					Rrtype: dns.TypeAAAA,
 					Class:  dns.ClassINET,
-					Ttl:    600,
+					Ttl:    60,
 				},
 				AAAA: net.ParseIP(ipStr),
 			})

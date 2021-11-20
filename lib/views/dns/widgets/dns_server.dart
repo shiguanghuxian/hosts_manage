@@ -88,6 +88,7 @@ class _DnsServerState extends State<DnsServer> {
                   wrap: true,
                   lineNumberStyle: LineNumberStyle(
                     background: Colors.grey[200],
+                    width: 30,
                   ),
                   background:
                       MacosTheme.of(context).brightness == Brightness.dark

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,7 +11,6 @@ import 'package:hosts_manage/views/dns/widgets/dns_local_ip.dart';
 import 'package:hosts_manage/views/dns/widgets/dns_server.dart';
 import 'package:hosts_manage/views/dns/widgets/dns_tooltip.dart';
 import 'package:macos_ui/macos_ui.dart';
-import 'package:open/open.dart';
 
 // 本地DNS代理
 class DNSPage extends StatefulWidget {
@@ -72,7 +69,7 @@ class _DNSPageState extends State<DNSPage> {
                   children: [
                     SizedBox(
                       width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height - 80,
+                      height: MediaQuery.of(context).size.height - 90,
                       child: Center(
                         child: Column(
                           children: [
@@ -88,7 +85,7 @@ class _DNSPageState extends State<DNSPage> {
                                         .title3,
                                   ),
                                 ),
-                                title: DnsAutoStart(),
+                                title: const DnsAutoStart(),
                               ),
                             ),
                             const Divider(
@@ -106,7 +103,7 @@ class _DNSPageState extends State<DNSPage> {
                                         .title3,
                                   ),
                                 ),
-                                title: DnsLocalIp(),
+                                title: const DnsLocalIp(),
                               ),
                             ),
                             const Divider(
@@ -124,7 +121,7 @@ class _DNSPageState extends State<DNSPage> {
                                         .title3,
                                   ),
                                 ),
-                                title: DnsServer(),
+                                title: const DnsServer(),
                               ),
                             ),
                             const Divider(
