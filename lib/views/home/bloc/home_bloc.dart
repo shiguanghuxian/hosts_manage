@@ -146,7 +146,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     // 更新hosts配置列表
     File hostsFile = await getHostsJsonFile();
-    hostsFile.writeAsString(json.encode(hostsList)); // 写入默认列表
+    hostsFile.writeAsStringSync(json.encode(hostsList)); // 写入默认列表
 
     return state.copyWith(
       showHosts: key,
@@ -176,7 +176,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     // 更新hosts配置列表
     File hostsFile = await getHostsJsonFile();
-    hostsFile.writeAsString(json.encode(hostsList)); // 写入默认列表
+    hostsFile.writeAsStringSync(json.encode(hostsList)); // 写入默认列表
 
     return state.copyWith(
       showHosts: showHosts,
@@ -211,7 +211,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
         File baseFile = await getHostsConfFile(_generateSha1(baseName));
 
-        baseFile.writeAsString('''##
+        baseFile.writeAsStringSync('''##
 # Host Database
 #
 # localhost is used to configure the loopback interface

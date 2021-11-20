@@ -59,6 +59,9 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return StoreBuilder<ZState>(builder: (context, store) {
       I18N lang = StoreProvider.of<ZState>(context).state.lang;
+      if (lang == null) {
+        return Container();
+      }
 
       return MacosWindow(
         child: ProsteIndexedStack(
