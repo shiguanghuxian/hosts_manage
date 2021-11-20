@@ -217,8 +217,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 # localhost is used to configure the loopback interface
 # when the system is booting.  Do not change this entry.
 ##
-127.0.0.1	localhost
-255.255.255.255	broadcasthost
+127.0.0.1 localhost
+255.255.255.255 broadcasthost
 ::1             localhost
 
 ''');
@@ -235,7 +235,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           name: backupName,
           check: true,
         ));
-        hostsFile.writeAsString(json.encode(hostsList)); // 写入默认列表
+        await hostsFile.writeAsString(json.encode(hostsList)); // 写入默认列表
       }
     } catch (e) {
       log('初始化hosts配置列表错误2 ${e.toString()}');

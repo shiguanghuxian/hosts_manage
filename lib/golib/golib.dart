@@ -1,12 +1,15 @@
 import 'dart:ffi';
 import 'dart:io';
+import 'package:call/call.dart';
 import 'package:ffi/ffi.dart';
 import 'package:hosts_manage/golib/godart.dart';
 
 /* 接入C函数，用于dart语言调用 */
 
 // 加载动态库
-DynamicLibrary _lib = DynamicLibrary.open(getLibPath());
+DynamicLibrary _lib = Platform.isWindows
+    ? getDyLibModule(getLibPath())
+    : DynamicLibrary.open(getLibPath());
 
 /// 启动服务
 typedef Start = void Function();
@@ -47,7 +50,7 @@ String getLibPath() {
   if (Platform.isMacOS) {
     return 'libdns.dylib';
   } else if (Platform.isWindows) {
-    return 'libdns.dll';
+    return 'lib/golib/libdns.dll';
   }
   return 'libdns.so';
 }

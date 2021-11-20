@@ -14,7 +14,7 @@ linux:
 	go build -o ${LIB_NAME}.so -buildmode=c-shared *.go
 
 windows: 
-	go build -o ${LIB_NAME}.dll -buildmode=c-shared *.go
+	go build -o libdns.dll -buildmode=c-shared .
 
 clean: 
 	@rm -f ./${LIB_NAME}*

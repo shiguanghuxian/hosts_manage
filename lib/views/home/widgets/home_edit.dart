@@ -115,7 +115,11 @@ class _HomeEditState extends State<HomeEdit> {
               showSave = false;
             } else if (state.showHosts.startsWith(ModelConst.systemShowHosts)) {
               // 显示系统hosts
-              hostsPath = File('/etc/hosts');
+              String sysHostsPath = '/etc/hosts';
+              if (Platform.isWindows) {
+                sysHostsPath = 'C:\\Windows\\System32\\drivers\\etc\\hosts';
+              }
+              hostsPath = File(sysHostsPath);
               showSave = false;
             } else {
               hostsPath = await getHostsConfFile(state.showHosts);

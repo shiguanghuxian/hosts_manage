@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:hosts_manage/i18n/i18n.dart';
+import 'package:hosts_manage/store/lang_store.dart';
 import 'package:hosts_manage/store/store.dart';
 import 'package:hosts_manage/views/home/bloc/home_bloc.dart';
 import 'package:hosts_manage/views/home/widgets/home_edit.dart';
@@ -23,19 +26,32 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _initHostsList();
   }
 
   final HomeBloc _homeBloc = HomeBloc();
+  I18N lang;
 
   @override
   void dispose() {
     super.dispose();
   }
 
+  _initHostsList() {
+    if (!Platform.isWindows) {
+      return;
+    }
+    // 等半秒钟，看一下是否启动错误
+    Future.delayed(const Duration(milliseconds: 500), () async {
+      _homeBloc.add(InitHostsListEvent(lang));
+      StoreProvider.of<ZState>(context).dispatch(UpdateLangAction(lang));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return StoreBuilder<ZState>(builder: (context, store) {
-      I18N lang = StoreProvider.of<ZState>(context).state.lang;
+      lang = StoreProvider.of<ZState>(context).state.lang;
       _homeBloc.add(InitHostsListEvent(lang));
       return BlocProvider(
         create: (context) {

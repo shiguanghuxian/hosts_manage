@@ -49,7 +49,9 @@ class _MyAppState extends State<MyApp> {
 
   final store = Store<ZState>(
     appReducer,
-    initialState: ZState(locale: ModelConst.zhLang, lang: I18N()),
+    initialState: ZState(
+      locale: ModelConst.zhLang,
+    ),
   );
 
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
@@ -76,9 +78,9 @@ class _MyAppState extends State<MyApp> {
     store.dispatch(UpdateLangAction(lang));
     store.dispatch(UpdateThemeAction(theme));
     store.dispatch(UpdateAutoDNSAction(autoDNS));
-    setState(() {
-      lang = lang;
-    });
+    // setState(() {
+    //   lang = lang;
+    // });
   }
 
   @override
