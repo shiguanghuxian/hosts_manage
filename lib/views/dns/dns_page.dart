@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,22 +46,24 @@ class _DNSPageState extends State<DNSPage> {
           return _dnsBloc;
         },
         child: MacosScaffold(
-          titleBar: TitleBar(
-            title: Text(lang.get('dns.title')),
-            actions: [
-              MacosIconButton(
-                backgroundColor: MacosColors.transparent,
-                icon: const MacosIcon(
-                  CupertinoIcons.sidebar_left,
-                  color: MacosColors.systemGrayColor,
+          titleBar: Platform.isWindows
+              ? null
+              : TitleBar(
+                  title: Text(lang.get('dns.title')),
+                  actions: [
+                    MacosIconButton(
+                      backgroundColor: MacosColors.transparent,
+                      icon: const MacosIcon(
+                        CupertinoIcons.sidebar_left,
+                        color: MacosColors.systemGrayColor,
+                      ),
+                      onPressed: () {
+                        MacosWindowScope.of(context).toggleSidebar();
+                      },
+                    ),
+                    const SizedBox(width: 10),
+                  ],
                 ),
-                onPressed: () {
-                  MacosWindowScope.of(context).toggleSidebar();
-                },
-              ),
-              const SizedBox(width: 10),
-            ],
-          ),
           children: [
             ContentArea(builder: (context, scrollController) {
               return SingleChildScrollView(
@@ -69,7 +73,9 @@ class _DNSPageState extends State<DNSPage> {
                   children: [
                     SizedBox(
                       width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height - 90,
+                      height: Platform.isWindows
+                          ? MediaQuery.of(context).size.height - 50
+                          : MediaQuery.of(context).size.height - 90,
                       child: Center(
                         child: Column(
                           children: [

@@ -132,7 +132,9 @@ class _HomeHostsListState extends State<HomeHostsList> {
             return Stack(
               children: [
                 Container(
-                  height: MediaQuery.of(context).size.height - 65,
+                  height: Platform.isWindows
+                      ? MediaQuery.of(context).size.height - 10
+                      : MediaQuery.of(context).size.height - 65,
                   padding: const EdgeInsets.only(left: 8, right: 0),
                   child: Column(
                     children: hostsWidgets,

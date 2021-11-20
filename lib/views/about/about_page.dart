@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -32,9 +34,11 @@ class _AboutPageState extends State<AboutPage> {
     return StoreBuilder<ZState>(builder: (context, store) {
       I18N lang = StoreProvider.of<ZState>(context).state.lang;
       return MacosScaffold(
-        titleBar: TitleBar(
-          title: Text(lang.get('about.title')),
-        ),
+        titleBar: Platform.isWindows
+            ? null
+            : TitleBar(
+                title: Text(lang.get('about.title')),
+              ),
         children: [
           ContentArea(builder: (context, scrollController) {
             return SingleChildScrollView(

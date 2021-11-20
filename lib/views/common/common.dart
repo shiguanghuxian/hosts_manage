@@ -85,7 +85,7 @@ startDnsProxy() async {
   Future.delayed(const Duration(milliseconds: 500), () async {
     Pointer<Int8> errPrt = getErr();
     String errStr = errPrt.cast<Utf8>().toDartString();
-    log('启动错误信息 ${errStr}');
+    log('启动错误信息: ${errStr}');
     if (errStr != null && errStr != '') {
       EasyLoading.showError(errStr);
     }

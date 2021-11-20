@@ -58,25 +58,27 @@ class _HomePageState extends State<HomePage> {
           return _homeBloc;
         },
         child: MacosScaffold(
-          titleBar: TitleBar(
-            title: Text(lang.get('home.title')),
-            actions: [
-              MacosTooltip(
-                message: lang.get('home.switch_main_menu_tooltip'),
-                child: MacosIconButton(
-                  backgroundColor: MacosColors.transparent,
-                  icon: const MacosIcon(
-                    CupertinoIcons.sidebar_left,
-                    color: MacosColors.systemGrayColor,
-                  ),
-                  onPressed: () {
-                    MacosWindowScope.of(context).toggleSidebar();
-                  },
+          titleBar: Platform.isWindows
+              ? null
+              : TitleBar(
+                  title: Text(lang.get('home.title')),
+                  actions: [
+                    MacosTooltip(
+                      message: lang.get('home.switch_main_menu_tooltip'),
+                      child: MacosIconButton(
+                        backgroundColor: MacosColors.transparent,
+                        icon: const MacosIcon(
+                          CupertinoIcons.sidebar_left,
+                          color: MacosColors.systemGrayColor,
+                        ),
+                        onPressed: () {
+                          MacosWindowScope.of(context).toggleSidebar();
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                  ],
                 ),
-              ),
-              const SizedBox(width: 10),
-            ],
-          ),
           children: [
             ResizablePane(
               minWidth: 180,
