@@ -196,7 +196,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         // 不存在时，备份系统hosts文件，并创建一条系统hosts记录
         log('不存在列表记录，备份系统hosts，并创建一条');
         String backupName = lang.get('home.backup_hosts');
-        File systemFile = File('/etc/hosts');
+        String sysHostsPath = '/etc/hosts';
+        if (Platform.isWindows) {
+          sysHostsPath = 'C:\\Windows\\System32\\drivers\\etc\\hosts';
+        }
+        File systemFile = File(sysHostsPath);
         String backupFilePath =
             await getHostsConfFilePath(_generateSha1(backupName));
         File backupFile = await systemFile.copy(backupFilePath);

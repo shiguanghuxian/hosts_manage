@@ -16,9 +16,10 @@ import 'package:ffi/ffi.dart';
 
 /// 获取存储跟目录
 Future<String> getAppRootDirectory() async {
-  Directory libDir = await getLibraryDirectory();
+  Directory libDir = await getApplicationSupportDirectory();
   Directory rootDir =
       Directory(path.join(libDir.path, "shiguanghuxian", "HostsManage"));
+  log('数据存储根目录 ${rootDir.path}');
   if (!rootDir.existsSync()) {
     await rootDir.create(recursive: true);
   }
@@ -162,9 +163,11 @@ saveHostsToSystem() async {
       log('缓存hosts路径$cachePath');
       File cacheHostsFile = File(cachePath);
       cacheHostsFile.writeAsStringSync(hostsBody, flush: true);
-      await run(
-          '/usr/bin/osascript -e \'do shell script "cp $cachePath /private/etc/hosts" with administrator privileges\'',
-          runInShell: true);
+      cachePath = cachePath.replaceAll(' ', '');
+      String shellCode =
+          '/usr/bin/osascript -e \'do shell script "cp $cachePath /private/etc/hosts" with administrator privileges\'';
+      log('mac执行脚本 $shellCode');
+      await run(shellCode, runInShell: true);
       // 删除缓存文件
       cacheHostsFile.deleteSync();
     } else {
