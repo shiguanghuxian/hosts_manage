@@ -1,5 +1,9 @@
 import 'dart:developer';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
+import 'package:fluent_ui/fluent_ui.dart' as fluent_ui;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hosts_manage/i18n/i18n.dart';
 import 'package:hosts_manage/models/const.dart';
@@ -11,10 +15,10 @@ import 'package:hosts_manage/store/store.dart';
 import 'package:hosts_manage/store/theme_store.dart';
 import 'package:hosts_manage/theme/dark.dart';
 import 'package:hosts_manage/theme/light.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:hosts_manage/views/common/common.dart';
 import 'package:hosts_manage/views/main/main_page.dart';
+import 'package:hosts_manage/views/main/win_main_page.dart';
 import 'package:macos_ui/macos_ui.dart';
 import 'package:redux/redux.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -78,9 +82,6 @@ class _MyAppState extends State<MyApp> {
     store.dispatch(UpdateLangAction(lang));
     store.dispatch(UpdateThemeAction(theme));
     store.dispatch(UpdateAutoDNSAction(autoDNS));
-    // setState(() {
-    //   lang = lang;
-    // });
   }
 
   @override
@@ -100,6 +101,36 @@ class _MyAppState extends State<MyApp> {
           _mode = ThemeMode.system;
         }
         log('应用启动主题 ${theme}');
+
+        // 区分windows还是macos，给windows点面子
+        if (Platform.isWindows) {
+          fluent_ui.ThemeData winDark = fluent_ui.ThemeData.dark();
+          fluent_ui.ThemeData winLight = fluent_ui.ThemeData.light();
+          if (theme == ModelConst.lightTheme) {
+            winDark = winLight;
+          } else if (theme == ModelConst.darkTheme) {
+            winLight = winDark;
+          }
+          return MacosApp(
+            title: lang.get('public.app_name'),
+            debugShowCheckedModeBanner: false,
+            theme: LightTheme,
+            darkTheme: DarkTheme,
+            themeMode: _mode,
+            routes: routes,
+            home: fluent_ui.FluentApp(
+              title: lang.get('public.app_name'),
+              theme: winLight,
+              darkTheme: winDark,
+              themeMode: _mode,
+              routes: routes,
+              home: const WinMainPage(),
+              builder: EasyLoading.init(),
+              debugShowCheckedModeBanner: false,
+            ),
+            builder: EasyLoading.init(),
+          );
+        }
 
         return MacosApp(
           title: lang.get('public.app_name'),

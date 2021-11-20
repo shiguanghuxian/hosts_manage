@@ -15,7 +15,6 @@ import 'package:hosts_manage/views/home/bloc/home_bloc.dart';
 import 'package:macos_ui/macos_ui.dart';
 import 'package:flutter_highlight/themes/github.dart';
 import 'package:highlight/languages/python.dart';
-import 'package:path_provider/path_provider.dart';
 
 // 编辑一个hosts内容
 class HomeEdit extends StatefulWidget {
@@ -149,7 +148,9 @@ class _HomeEditState extends State<HomeEdit> {
             children: [
               SizedBox(
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height - 53,
+                height: Platform.isWindows
+                    ? MediaQuery.of(context).size.height
+                    : MediaQuery.of(context).size.height - 53,
                 child: CodeField(
                   wrap: true,
                   lineNumberStyle: LineNumberStyle(

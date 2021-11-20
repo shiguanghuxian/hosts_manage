@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cli_script/cli_script.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,7 +9,6 @@ import 'package:hosts_manage/i18n/i18n.dart';
 import 'package:hosts_manage/store/store.dart';
 import 'package:hosts_manage/views/dns/bloc/dns_bloc.dart';
 import 'package:macos_ui/macos_ui.dart';
-import 'package:open/open.dart';
 
 // 提示文本
 class DnsTooltip extends StatefulWidget {
@@ -54,8 +54,7 @@ class _DnsTooltipState extends State<DnsTooltip> {
                   child: InkWell(
                     onTap: () {
                       if (Platform.isMacOS) {
-                        open('/System/Library/PreferencePanes/Network.prefPane',
-                            arguments: ["PreferencePanes"]);
+                        run('open /System/Library/PreferencePanes/Network.prefPane');
                       }
                     },
                     child: Text(

@@ -13,8 +13,8 @@ import 'package:hosts_manage/i18n/i18n.dart';
 import 'package:hosts_manage/store/store.dart';
 import 'package:hosts_manage/views/common/common.dart';
 import 'package:hosts_manage/views/dns/bloc/dns_bloc.dart';
-import 'package:macos_ui/macos_ui.dart';
 import 'package:r_get_ip/r_get_ip.dart';
+import 'package:macos_ui/macos_ui.dart';
 
 // 右下角操作按钮
 class DnsActionButton extends StatefulWidget {
@@ -80,7 +80,7 @@ class _DnsActionButtonState extends State<DnsActionButton> {
       Pointer<Int8> errPrt = getErr();
 
       String errStr = errPrt.cast<Utf8>().toDartString();
-      log('启动错误信息 ${errStr}');
+      log('启动错误信息: ${errStr}');
       if (errStr != null && errStr != '') {
         EasyLoading.showError(errStr);
         // 重新获取一下启动状态

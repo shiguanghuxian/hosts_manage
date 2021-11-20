@@ -132,7 +132,8 @@ class _HostsListWidgetState extends State<HostsListWidget> {
                       : MacosTheme.of(context).typography.title1.color,
                 ),
               ),
-              trailing: widget.hostsInfoModel.isBaseHosts == true ? null : trailing,
+              trailing:
+                  widget.hostsInfoModel.isBaseHosts == true ? null : trailing,
             );
           },
         );

@@ -21,3 +21,9 @@ https://pub.flutter-io.cn/packages/navigation_drawer_menu
 https://pub.flutter-io.cn/packages/macos_ui
 https://pub.flutter-io.cn/packages/context_menu_macos
 https://pub.flutter-io.cn/packages/dns
+
+## windows 打包工具
+```
+PS c:\src\flutter_project\> flutter build windows
+PS c:\src\flutter_project\> flutter pub run msix:create
+```
