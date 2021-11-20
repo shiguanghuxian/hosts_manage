@@ -41,6 +41,10 @@ func SetAddressBook(str *string) {
 		if strings.HasPrefix(v, "#") {
 			continue
 		}
+		vArr := strings.Split(v, "#")
+		if len(vArr) > 1 {
+			v = strings.TrimSpace(vArr[0])
+		}
 		arr := strings.Fields(v)
 		if len(arr) != 2 {
 			continue
@@ -61,6 +65,10 @@ func SetPublicDnsServer(str *string) {
 		v = strings.TrimSpace(v)
 		if strings.HasPrefix(v, "#") {
 			continue
+		}
+		vArr := strings.Split(v, "#")
+		if len(vArr) > 1 {
+			v = strings.TrimSpace(vArr[0])
 		}
 		if v != "" {
 			addrs = append(addrs, v)
