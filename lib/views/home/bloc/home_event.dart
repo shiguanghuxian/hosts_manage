@@ -8,8 +8,9 @@ abstract class HomeEvent extends Equatable {
 class ChangeSelectedHostsEvent extends HomeEvent {
   final String selectedHosts;
   final bool isCheck;
+  final BuildContext context;
 
-  const ChangeSelectedHostsEvent(this.selectedHosts, this.isCheck);
+  const ChangeSelectedHostsEvent(this.selectedHosts, this.isCheck, this.context);
 
   @override
   List<Object> get props => [selectedHosts, isCheck];

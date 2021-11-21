@@ -9,7 +9,9 @@
         "done": "Done",
         "delete": "Del",
         "save": "Save",
-        "exit": "Exit"
+        "exit": "Exit",
+        "close": "Close",
+        "copied": "Copied"
     },
     "home": {
         "title": "Hosts Manage",
@@ -32,7 +34,10 @@
         "add_btn_tooltip": "Click Add hosts configuration",
         "show_hosts_tooltip": "Click to view the current system hosts file",
         "switch_hosts_tooltip": "Toggles whether the current hosts configuration is enabled",
-        "switch_main_menu_tooltip": "Click to switch the left main menu hidden"
+        "switch_main_menu_tooltip": "Click to switch the left main menu hidden",
+        "copy_sandbox_shell": "Copy command",
+        "copy_sandbox_message": "If you do not have permission to modify the system hosts file, please execute the following command to modify the permissions of the hosts file.",
+        "save_windows_err": "You do not have permission to modify the system hosts file. Please open the application as an administrator again"
     },
     "dns": {
         "title": "Local DNS proxy",
@@ -45,7 +50,6 @@
         "local_ip_copy_tooltip": "Click Copy DNS proxy address",
         "tooltip": "After configuring the hosts of each group on the hosts management page, click Start agent in the lower right corner to add the above local DNS proxy address to the first one in the system DNS configuration. After that, the DNS resolution of the domain name visited by the website will be the IP configured by the hosts. If you are on the same network, mobile phones and other devices can also be configured as this DNS address. If the above third DNS server is not configured, please configure multiple DNS server addresses on the system DNS page and ensure that the above second local DNS address is the first.",
         "open_preference": "Open preferences",
-        "copied": "Copied",
         "server_tooltip": "Click restart DNS to save this configuration"
     },
     "settings": {

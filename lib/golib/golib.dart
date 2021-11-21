@@ -27,7 +27,7 @@ final SetAddressBook setAddressBookDNS = _lib
     .lookup<NativeFunction<Void Function(Pointer<GoString>)>>('SetAddressBook')
     .asFunction();
 
-/// 设置ip映射
+/// 设置公网dns服务器列表
 typedef SetPublicDnsServer = void Function(Pointer<GoString>);
 final SetPublicDnsServer setPublicDnsServerDNS = _lib
     .lookup<NativeFunction<Void Function(Pointer<GoString>)>>(

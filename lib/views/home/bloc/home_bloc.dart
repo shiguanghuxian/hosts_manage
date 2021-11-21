@@ -5,10 +5,12 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:crypto/crypto.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hosts_manage/i18n/i18n.dart';
 import 'package:hosts_manage/models/hosts_info_model.dart';
 import 'package:hosts_manage/views/common/common.dart';
+import 'package:hosts_manage/views/home/widgets/home_show_sandbox.dart';
 import 'package:path_provider/path_provider.dart';
 
 part "home_event.dart";
@@ -49,9 +51,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     await hostsFile.writeAsString(json.encode(hostsList),
         flush: true); // 写入默认列表
 
-    // 更新hosts 或刷新dns服务
-    await saveHostsToSystem(); // 本地hosts文件
-    await syncDataDnsProxy(); // dns代理
+    await changeSystemHosts(event.context);
 
     log('需要更新hosts');
     return state.copyWith(

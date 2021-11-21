@@ -10,4 +10,8 @@ class ModelConst {
 
   // 系统hosts
   static const systemShowHosts = 'systemHosts';
+
+  // 是否启用了沙箱
+  static const sandboxEnable = false;
+
 }

@@ -9,7 +9,9 @@ import 'package:hosts_manage/components/macos_alert_dialog.dart';
 import 'package:hosts_manage/i18n/i18n.dart';
 import 'package:hosts_manage/models/hosts_info_model.dart';
 import 'package:hosts_manage/store/store.dart';
+import 'package:hosts_manage/views/common/common.dart';
 import 'package:hosts_manage/views/home/bloc/home_bloc.dart';
+import 'package:hosts_manage/views/home/widgets/home_show_sandbox.dart';
 import 'package:macos_ui/macos_ui.dart';
 
 // hosts配置列表中一个元素
@@ -107,7 +109,7 @@ class _HostsListWidgetState extends State<HostsListWidget> {
                       onChanged: (value) {
                         log('点击 ${value} -- ${widget.hostsInfoModel.isBaseHosts}');
                         context.read<HomeBloc>().add(ChangeSelectedHostsEvent(
-                            widget.hostsInfoModel.key, value));
+                            widget.hostsInfoModel.key, value, context));
                       },
                     ),
                   ),

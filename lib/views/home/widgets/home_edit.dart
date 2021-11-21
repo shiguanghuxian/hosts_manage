@@ -12,6 +12,7 @@ import 'package:hosts_manage/models/hosts_info_model.dart';
 import 'package:hosts_manage/store/store.dart';
 import 'package:hosts_manage/views/common/common.dart';
 import 'package:hosts_manage/views/home/bloc/home_bloc.dart';
+import 'package:hosts_manage/views/home/widgets/home_show_sandbox.dart';
 import 'package:macos_ui/macos_ui.dart';
 import 'package:flutter_highlight/themes/github.dart';
 import 'package:highlight/languages/python.dart';
@@ -54,14 +55,14 @@ class _HomeEditState extends State<HomeEdit> {
 
   // 编辑内容变化时
   void _onChange(String val) {
-    log('内容变化 ${val}');
+    // log('内容变化: ${val}');
     setState(() {
       _newContent = val;
     });
   }
 
   // 保存右侧内容
-  _saveHostsContent() async {
+  _saveHostsContent(BuildContext ctx) async {
     if (_homeBloc.state.showHosts == '' || _codeController.text == null) {
       return;
     }
@@ -85,8 +86,7 @@ class _HomeEditState extends State<HomeEdit> {
         }
       }
       if (isCheck == true) {
-        await saveHostsToSystem(); // 本地hosts文件
-        await syncDataDnsProxy(); // dns代理
+        changeSystemHosts(ctx);
       }
     } catch (e) {
       log('保存文件错误 ${e.toString()}');
@@ -172,7 +172,7 @@ class _HomeEditState extends State<HomeEdit> {
                     ? InkWell(
                         onTap: () {
                           // 保存修改
-                          _saveHostsContent();
+                          _saveHostsContent(context);
                         },
                         child: Container(
                           width: 50,

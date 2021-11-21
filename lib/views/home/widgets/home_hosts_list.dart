@@ -98,7 +98,7 @@ class _HomeHostsListState extends State<HomeHostsList> {
             log('Show ${item.name}');
             context
                 .read<HomeBloc>()
-                .add(ChangeSelectedHostsEvent(item.key, !item.check));
+                .add(ChangeSelectedHostsEvent(item.key, !item.check, context));
           },
         ),
       );

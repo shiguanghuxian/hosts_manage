@@ -9,6 +9,7 @@ import 'package:cli_script/cli_script.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hosts_manage/golib/godart.dart';
 import 'package:hosts_manage/golib/golib.dart';
+import 'package:hosts_manage/models/const.dart';
 import 'package:hosts_manage/models/hosts_info_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
@@ -48,7 +49,7 @@ Future<String> getAllHostsVal() async {
         hostsBody += "\n#${item.name}\n$oneVal";
       }
     }
-    log('拼接的完整hosts文件内容 $hostsBody');
+    // log('拼接的完整hosts文件内容 $hostsBody');
     return hostsBody;
   } catch (e) {
     EasyLoading.showError('拼接hosts文件遇到异常 ${e.toString()}');
@@ -141,20 +142,20 @@ Future<String> getHostsConfFilePath(String key) async {
   return path.join(hostsConfDir.path, key + ".json");
 }
 
-/// 保存hosts到系统hosts文件路径 EasyLoading.showError('Save failed');
-saveHostsToSystem() async {
+/// 保存hosts到系统hosts文件路径
+Future<bool> saveHostsToSystem() async {
   try {
     String hostsBody = await getAllHostsVal();
     // 内容为空不保存
     if (hostsBody == null || hostsBody == '') {
-      EasyLoading.showError('Error');
-      return;
+      EasyLoading.showError('Save data is empty');
+      return true;
     }
     File hostsFile;
     if (Platform.isWindows) {
       hostsFile = File('C:\\Windows\\System32\\drivers\\etc\\hosts');
     } else {
-      hostsFile = File('/etc/hosts');
+      hostsFile = File('/private/etc/hosts');
     }
     // macos使用脚本获取权限写入
     if (Platform.isMacOS) {
@@ -163,18 +164,27 @@ saveHostsToSystem() async {
       log('缓存hosts路径$cachePath');
       File cacheHostsFile = File(cachePath);
       cacheHostsFile.writeAsStringSync(hostsBody, flush: true);
-      cachePath = cachePath.replaceAll(' ', '');
-      String shellCode =
-          '/usr/bin/osascript -e \'do shell script "cp $cachePath /private/etc/hosts" with administrator privileges\'';
-      log('mac执行脚本 $shellCode');
-      await run(shellCode, runInShell: true);
+
+      String shellCode = '';
+      if (ModelConst.sandboxEnable) {
+        // shellCode = "cp \"$cachePath\" /private/etc/hosts";
+        hostsFile.writeAsStringSync(hostsBody, flush: true);
+      } else {
+        cachePath = cachePath.replaceAll(' ', '');
+        shellCode =
+            '/usr/bin/osascript -e \'do shell script "cp $cachePath /private/etc/hosts" with administrator privileges\'';
+        log('mac执行脚本 $shellCode');
+        await run(shellCode, runInShell: true);
+      }
+
       // 删除缓存文件
       cacheHostsFile.deleteSync();
     } else {
       hostsFile.writeAsStringSync(hostsBody, flush: true);
     }
   } catch (e) {
-    log('保存系统hosts文件错误:${e.toString()}');
-    EasyLoading.showError('保存系统hosts文件错误');
+    log('保存系统hosts文件错误 ${e.toString()}');
+    return false;
   }
+  return true;
 }

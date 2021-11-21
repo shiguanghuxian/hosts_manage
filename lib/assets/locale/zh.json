@@ -9,7 +9,9 @@
         "done": "完成",
         "delete": "删除",
         "save": "保存",
-        "exit": "退出"
+        "exit": "退出",
+        "close": "关闭",
+        "copied": "复制成功"
     },
     "home": {
         "title": "Hosts管理",
@@ -26,13 +28,16 @@
         "del_hosts_message": "确定删除这个hosts配置？",
         "show_edit_hosts": "编辑hosts配置",
         "icon_tooltip": "hosts文件管理工具",
-        "save_hosts_ok": "保存hosts配置成功",
+        "save_hosts_ok": "保存右侧hosts配置成功",
         "save_hosts_err": "保存hosts配置错误",
         "edit_tooltip": "点击编辑显示删除配置按钮",
         "add_btn_tooltip": "点击添加hosts配置",
         "show_hosts_tooltip": "点击查看当前系统hosts文件",
         "switch_hosts_tooltip": "切换当前hosts配置是否启用",
-        "switch_main_menu_tooltip": "点击切换左侧主菜单隐藏显示"
+        "switch_main_menu_tooltip": "点击切换左侧主菜单隐藏显示",
+        "copy_sandbox_shell": "复制命令",
+        "copy_sandbox_message": "无权限修改系统hosts文件，请执行以下命令修改hosts文件权限，如果依然不行请下载完整版app",
+        "save_windows_err": "无权限修改系统hosts文件，请重新以管理员身份打开应用"
     },
     "dns": {
         "title": "本地DNS代理",
@@ -45,7 +50,6 @@
         "local_ip_copy_tooltip": "点击复制DNS代理地址",
         "tooltip": "在Hosts管理页面配置好各个分组的hosts后，点击右下角启动代理后，可将上述本机DNS代理地址添加到系统DNS配置第一个。之后网站访问域名dns解析将会是hosts配置的ip。如果在同一个网络手机等设备也可以配置为此DNS地址。如果上述第三项DNS服务器未配置，请在系统DNS页面配置多个DNS服务器地址，并确保上述第二项本地DNS地址为第一个。",
         "open_preference": "打开偏好设置",
-        "copied": "复制成功",
         "server_tooltip": "点击重启dns后会保存此配置"
     },
     "settings": {

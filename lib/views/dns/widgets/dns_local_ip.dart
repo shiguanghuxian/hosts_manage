@@ -58,7 +58,7 @@ class _DnsLocalIpState extends State<DnsLocalIp> {
                           FlutterClipboard.copy(state.localDnsAddr)
                               .then((value) {
                             log('copy结果');
-                            EasyLoading.showInfo(lang.get('dns.copied'));
+                            EasyLoading.showInfo(lang.get('public.copied'));
                           }).onError((error, stackTrace) {
                             if (error == null) {
                               return;
