@@ -62,6 +62,7 @@ dependencies:
   cli_script: ^0.2.3+1
   call: ^0.3.0
   fluent_ui: ^3.4.0
+  event_bus: ^2.0.0
  
 
 dev_dependencies:

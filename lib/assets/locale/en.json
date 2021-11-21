@@ -50,7 +50,8 @@
         "local_ip_copy_tooltip": "Click Copy DNS proxy address",
         "tooltip": "After configuring the hosts of each group on the hosts management page, click Start agent in the lower right corner to add the above local DNS proxy address to the first one in the system DNS configuration. After that, the DNS resolution of the domain name visited by the website will be the IP configured by the hosts. If you are on the same network, mobile phones and other devices can also be configured as this DNS address. If the above third DNS server is not configured, please configure multiple DNS server addresses on the system DNS page and ensure that the above second local DNS address is the first.",
         "open_preference": "Open preferences",
-        "server_tooltip": "Click restart DNS to save this configuration"
+        "server_tooltip": "Click restart DNS to save this configuration",
+        "tray_dns_proxy": "DNS Proxy"
     },
     "settings": {
         "title": "Settings",

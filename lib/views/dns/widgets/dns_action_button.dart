@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:ffi';
 
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:hosts_manage/event_manage/event_manage.dart';
 import 'package:hosts_manage/golib/godart.dart';
 import 'package:hosts_manage/golib/golib.dart';
 import 'package:hosts_manage/i18n/i18n.dart';
@@ -33,14 +35,23 @@ class _DnsActionButtonState extends State<DnsActionButton> {
     _initIsRun();
     _dnsBloc = context.read<DNSBloc>();
     _getLocalIP();
+    //监听dns启动变化
+    _subscription = eventBus
+        .on<ChangeContextMenuHomeToDNS>()
+        .listen((ChangeContextMenuHomeToDNS data) {
+      _initIsRun();
+    });
+    _subscription.resume();
   }
 
   DNSBloc _dnsBloc;
   I18N lang;
   bool isRun = false;
+  StreamSubscription _subscription;
 
   @override
   void dispose() {
+    _subscription?.cancel();
     super.dispose();
   }
 
@@ -56,6 +67,8 @@ class _DnsActionButtonState extends State<DnsActionButton> {
   /// 停止dns代理
   void _stopDNS() {
     stopDNS();
+    // 通知菜单发生变化
+    eventBus.fire(const ChangeContextMenuDNSToHome());
     setState(() {
       isRun = false;
     });
@@ -63,6 +76,13 @@ class _DnsActionButtonState extends State<DnsActionButton> {
 
   /// 启动dns代理
   void _startDns() async {
+    int isStart = getIsStart();
+    if (isStart == 1) {
+      setState(() {
+        isRun = isStart == 1;
+      });
+      return;
+    }
     // 设置hosts域名ip映射
     String hostsBody = await getAllHostsVal();
     setAddressBookDNS(GoString.fromString(hostsBody));
@@ -77,8 +97,10 @@ class _DnsActionButtonState extends State<DnsActionButton> {
     _getLocalIP();
     // 等半秒钟，看一下是否启动错误
     Future.delayed(const Duration(milliseconds: 500), () async {
+      // 通知菜单发生变化
+      eventBus.fire(const ChangeContextMenuDNSToHome());
+      // 获取go dns启动错误信息
       Pointer<Int8> errPrt = getErr();
-
       String errStr = errPrt.cast<Utf8>().toDartString();
       log('启动错误信息: ${errStr}');
       if (errStr != null && errStr != '') {

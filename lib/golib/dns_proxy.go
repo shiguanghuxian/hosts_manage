@@ -56,6 +56,10 @@ func (dp *DnsProxy) SetPublicDnsServer(addrs []string) {
 
 // Start 启动dns代理服务
 func (dp *DnsProxy) Start() {
+	if dp.isStart {
+		log.Println("代理运行中，请先停止")
+		return
+	}
 	udpService := &dns.Server{
 		Addr:    "0.0.0.0:53",
 		Net:     "udp",

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
@@ -5,10 +6,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:hosts_manage/event_manage/event_manage.dart';
+import 'package:hosts_manage/golib/golib.dart';
 import 'package:hosts_manage/i18n/i18n.dart';
 import 'package:hosts_manage/models/const.dart';
 import 'package:hosts_manage/models/hosts_info_model.dart';
 import 'package:hosts_manage/store/store.dart';
+import 'package:hosts_manage/views/common/common.dart';
 import 'package:hosts_manage/views/home/bloc/home_bloc.dart';
 import 'package:hosts_manage/views/home/widgets/hosts_add_widget.dart';
 import 'package:hosts_manage/views/home/widgets/hosts_list_widget.dart';
@@ -30,15 +34,24 @@ class _HomeHostsListState extends State<HomeHostsList> {
   void initState() {
     super.initState();
     _homeBloc = context.read<HomeBloc>();
+    //监听dns启动变化
+    _subscription = eventBus
+        .on<ChangeContextMenuDNSToHome>()
+        .listen((ChangeContextMenuDNSToHome data) {
+      _setContextMenu();
+    });
+    _subscription.resume();
   }
 
   HomeBloc _homeBloc;
   I18N lang;
   final system_tray.AppWindow _appWindow = system_tray.AppWindow();
   bool isInitSystemTray = false; // 是否初始化了状态菜单
+  StreamSubscription _subscription;
 
   @override
   void dispose() {
+    _subscription?.cancel();
     super.dispose();
   }
 
@@ -65,8 +78,35 @@ class _HomeHostsListState extends State<HomeHostsList> {
 
   /// 更新菜单选项
   Future<void> _setContextMenu() async {
+    // 获取dns代理启动情况
+    bool dnsRun = getIsStart() == 1;
+    String dnsLabel = '';
+    if (dnsRun) {
+      dnsLabel = lang.get('dns.stop') + lang.get('dns.tray_dns_proxy');
+    } else {
+      dnsLabel = lang.get('dns.start') + lang.get('dns.tray_dns_proxy');
+    }
     // 菜单内容
     final List<system_tray.MenuItemBase> menuBase = [
+      system_tray.MenuSeparator(),
+      system_tray.MenuItem(
+        label: dnsLabel,
+        onClicked: () async {
+          log(dnsLabel);
+          if (dnsRun) {
+            stopDNS();
+          } else {
+            await startDnsProxy();
+          }
+
+          // 等半秒钟
+          Future.delayed(const Duration(milliseconds: 500), () async {
+            _setContextMenu();
+            // 通知菜单发生变化
+            eventBus.fire(const ChangeContextMenuHomeToDNS());
+          });
+        },
+      ),
       system_tray.MenuSeparator(),
       system_tray.MenuItem(
         label: lang.get('home.show_edit_hosts'),
