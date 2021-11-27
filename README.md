@@ -30,7 +30,6 @@ assets-cdn.github.com
 github.global.ssl.fastly.net
 stackoverflow.com
 stackexchange.com
-superuser.com
 ```
 
 windows 打包工具

@@ -18,6 +18,7 @@ type DnsProxy struct {
 	udpService      *dns.Server       // dns服务对象
 	isStart         bool              // 是否已启动
 	err             error             // 是否有错误
+	dnsCli          *sync.Pool        // dns上游代理池
 }
 
 var (
@@ -26,6 +27,12 @@ var (
 		publicDnsServer: make([]string, 0),
 		lockMap:         new(sync.Mutex),
 		isStart:         false,
+		dnsCli: &sync.Pool{New: func() interface{} {
+			return &dns.Client{
+				Timeout: 9 * time.Second,
+				Net:     "udp",
+			}
+		}},
 	}
 )
 
@@ -119,7 +126,7 @@ func (dp *DnsProxy) ServeDNS(w dns.ResponseWriter, msg *dns.Msg) {
 		if ipStr, ok := dp.addressBook[queryName]; ok {
 			respMsg.Answer = append(respMsg.Answer, &dns.A{
 				Hdr: dns.RR_Header{
-					Name:   question.Name,
+					Name:   dns.Fqdn(question.Name),
 					Rrtype: dns.TypeA,
 					Class:  dns.ClassINET,
 					Ttl:    60,
@@ -131,7 +138,7 @@ func (dp *DnsProxy) ServeDNS(w dns.ResponseWriter, msg *dns.Msg) {
 		if ipStr, ok := dp.addressBook[queryName]; ok {
 			respMsg.Answer = append(respMsg.Answer, &dns.AAAA{
 				Hdr: dns.RR_Header{
-					Name:   question.Name,
+					Name:   dns.Fqdn(question.Name),
 					Rrtype: dns.TypeAAAA,
 					Class:  dns.ClassINET,
 					Ttl:    60,
@@ -145,10 +152,9 @@ func (dp *DnsProxy) ServeDNS(w dns.ResponseWriter, msg *dns.Msg) {
 		// 默认给失败
 		respMsg.Rcode = dns.RcodeServerFailure
 		// 未命中本地缓存，向上请求主机ip
-		dnsReq := dns.Client{
-			Timeout: 9 * time.Second,
-			Net:     "udp",
-		}
+		dnsReq := dp.dnsCli.Get().(*dns.Client)
+		defer dp.dnsCli.Put(dnsReq)
+
 		for _, dnsServerIp := range dp.publicDnsServer {
 			newRespMsg, _, err := dnsReq.Exchange(msg, fmt.Sprintf("%s:53", dnsServerIp))
 			if err != nil {

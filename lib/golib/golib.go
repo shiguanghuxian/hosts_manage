@@ -78,6 +78,8 @@ func SetPublicDnsServer(str *string) {
 }
 
 func main() {
-	DnsProxyHandle.publicDnsServer = []string{"8.8.8.8"}
-	DnsProxyHandle.Start()
+	// DnsProxyHandle.publicDnsServer = []string{"8.8.8.8"}
+	// DnsProxyHandle.Start()
+
+	Socks5ProxyHandle.Start()
 }

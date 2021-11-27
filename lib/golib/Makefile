@@ -8,7 +8,7 @@ run:
 
 macos: 
 	go build -o ${LIB_NAME}.dylib -buildmode=c-shared *.go
-	mv ./${LIB_NAME}* ../../macos/dylib
+	mv ./${LIB_NAME}.dylib ../../macos/dylib
 
 linux: 
 	go build -o ${LIB_NAME}.so -buildmode=c-shared *.go
