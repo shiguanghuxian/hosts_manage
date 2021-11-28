@@ -7,6 +7,8 @@ import (
 	"strings"
 )
 
+/* DNS服务相关，暂不改名，socks5服务增加前缀 */
+
 //export Start
 func Start() {
 	go DnsProxyHandle.Start()
@@ -75,6 +77,48 @@ func SetPublicDnsServer(str *string) {
 		}
 	}
 	DnsProxyHandle.SetPublicDnsServer(addrs)
+}
+
+/* socks5代理 */
+
+//export Socks5Start
+func Socks5Start() {
+	go Socks5ProxyHandle.Start()
+}
+
+//export Socks5Stop
+func Socks5Stop() {
+	Socks5ProxyHandle.Stop()
+}
+
+//export Socks5GetIsStart
+func Socks5GetIsStart() int32 {
+	if Socks5ProxyHandle.GetIsStart() {
+		return 1
+	}
+	return 0
+}
+
+//export Socks5GetErr
+func Socks5GetErr() *C.char {
+	errStr := Socks5ProxyHandle.GetErr()
+	return C.CString(errStr)
+}
+
+//export Socks5GenCaCert
+func Socks5GenCaCert() *C.char {
+	err := Socks5ProxyHandle.GenCaCert()
+	outStr := ""
+	if err != nil {
+		outStr = err.Error()
+	}
+	return C.CString(outStr)
+}
+
+//export Socks5SetCertPath
+func Socks5SetCertPath(str *string) {
+	log.Println("证书根路径", *str)
+	Socks5ProxyHandle.SetCertPath(*str)
 }
 
 func main() {

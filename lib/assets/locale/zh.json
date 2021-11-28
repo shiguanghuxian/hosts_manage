@@ -53,6 +53,15 @@
         "server_tooltip": "点击重启dns后会保存此配置",
         "tray_dns_proxy": "DNS代理"
     },
+    "socks5": {
+        "title": "Socks5代理",
+        "start": "启动",
+        "stop": "停止",
+        "create_ca": "生成证书",
+        "open_ca_path": "打开证书目录",
+        "create_ca_message": "请打开证书目录，安装证书并信任",
+        "open_ca_path_btn": "打开目录"
+    },
     "settings": {
         "title": "设置",
         "theme_title": "主题：",

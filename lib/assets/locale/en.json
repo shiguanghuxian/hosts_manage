@@ -53,6 +53,15 @@
         "server_tooltip": "Click restart DNS to save this configuration",
         "tray_dns_proxy": "DNS Proxy"
     },
+    "socks5": {
+        "title": "Local Socks5 proxy",
+        "start": "Start",
+        "stop": "Stop",
+        "create_ca": "Generate certificate",
+        "open_ca_path": "Open certificate directory",
+        "create_ca_message": "Please open the certificate directory, install the certificate and trust it",
+        "open_ca_path_btn": "Open"
+    },
     "settings": {
         "title": "Settings",
         "theme_title": "Theme",

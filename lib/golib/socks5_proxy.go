@@ -96,27 +96,56 @@ const (
 	caKey  = "key.pem"
 )
 
-func init() {
+func (sp *Socks5Proxy) initCa() {
 	// read ca cert
-	certPEMBlock, err := ioutil.ReadFile(caCert)
+	certPEMBlock, err := ioutil.ReadFile(strings.Join([]string{sp.certPath, caCert}, string(os.PathSeparator)))
 	if err != nil {
-		log.Fatal(err)
+		log.Println("证书错误1", err)
+		return
 	}
 	certDERBlock, _ := pem.Decode(certPEMBlock)
 	caParent, err = x509.ParseCertificate(certDERBlock.Bytes)
 	if err != nil {
-		log.Fatal(err)
+		log.Println("证书错误2", err)
+		return
 	}
 
-	keyPEMBlock, err := ioutil.ReadFile(caKey)
+	keyPEMBlock, err := ioutil.ReadFile(strings.Join([]string{sp.certPath, caKey}, string(os.PathSeparator)))
 	if err != nil {
-		log.Fatal(err)
+		log.Println("证书错误3", err)
+		return
 	}
 	keyDERBlock, _ := pem.Decode(keyPEMBlock)
 	caPriKey, err = x509.ParsePKCS1PrivateKey(keyDERBlock.Bytes)
 	if err != nil {
-		log.Fatal(err)
+		log.Println("证书错误5", err)
+		return
 	}
+}
+
+func init() {
+	// 初始化定时更新ip
+	go func() {
+		t := time.NewTicker(10 * 60 * time.Second)
+		for {
+			<-t.C
+			Socks5ProxyHandle.cronIpConnTime()
+		}
+	}()
+
+}
+
+// GetIsStart 获取启动状态
+func (sp *Socks5Proxy) GetIsStart() bool {
+	return sp.isStart
+}
+
+// GetErr 获取启动或停止错误
+func (sp *Socks5Proxy) GetErr() string {
+	if sp.err == nil {
+		return ""
+	}
+	return sp.err.Error()
 }
 
 // SetPublicDnsServer 设置公网dns服务
@@ -140,6 +169,7 @@ func (sp *Socks5Proxy) SetSpeedUpHosts(speedUpHosts []string) {
 // 设置证书生成根路径
 func (sp *Socks5Proxy) SetCertPath(certPath string) {
 	sp.certPath = certPath
+	sp.initCa()
 }
 
 // 获取主机对于ip列表，从多个dns获取ip
@@ -288,7 +318,14 @@ func (sp *Socks5Proxy) sortIpsConnTime(host string) {
 			v.ConnTime = connTime
 		}
 	}
+	// <0的往后排
 	sort.Slice(hostIpAddrs, func(i, j int) bool {
+		if hostIpAddrs[i].ConnTime < 0 {
+			return false
+		}
+		if hostIpAddrs[j].ConnTime < 0 {
+			return true
+		}
 		return hostIpAddrs[i].ConnTime < hostIpAddrs[j].ConnTime
 	})
 	sp.hostIpAddrsLock.Lock()
@@ -541,6 +578,7 @@ func (sp *Socks5Proxy) GenCaCert() error {
 	if err != nil {
 		return err
 	}
+	sp.initCa()
 	return nil
 }
 

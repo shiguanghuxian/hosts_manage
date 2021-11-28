@@ -8,6 +8,7 @@ import 'package:hosts_manage/views/about/about_page.dart';
 import 'package:hosts_manage/views/dns/dns_page.dart';
 import 'package:hosts_manage/views/home/home_page.dart';
 import 'package:hosts_manage/views/settings/settings_page.dart';
+import 'package:hosts_manage/views/socks5/socks5_page.dart';
 import 'package:macos_ui/macos_ui.dart';
 import 'package:proste_indexed_stack/proste_indexed_stack.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -40,6 +41,9 @@ class _MainPageState extends State<MainPage> {
     ),
     IndexedStackChild(
       child: const DNSPage(),
+    ),
+    IndexedStackChild(
+      child: const Socks5Page(),
     ),
     IndexedStackChild(
       child: const SettingsPage(),
@@ -109,6 +113,16 @@ class _MainPageState extends State<MainPage> {
                     size: 18,
                   ),
                   label: Text(lang.get('dns.title')),
+                ),
+                SidebarItem(
+                  leading: MacosIcon(
+                    CupertinoIcons.lock_circle,
+                    color: pageIndex == 1
+                        ? Colors.white
+                        : MacosTheme.of(context).typography.largeTitle.color,
+                    size: 18,
+                  ),
+                  label: Text(lang.get('socks5.title')),
                 ),
                 SidebarItem(
                   leading: MacosIcon(
