@@ -117,7 +117,7 @@ class _MainPageState extends State<MainPage> {
                 SidebarItem(
                   leading: MacosIcon(
                     CupertinoIcons.lock_circle,
-                    color: pageIndex == 1
+                    color: pageIndex == 2
                         ? Colors.white
                         : MacosTheme.of(context).typography.largeTitle.color,
                     size: 18,
@@ -127,7 +127,7 @@ class _MainPageState extends State<MainPage> {
                 SidebarItem(
                   leading: MacosIcon(
                     CupertinoIcons.settings,
-                    color: pageIndex == 2
+                    color: pageIndex == 3
                         ? Colors.white
                         : MacosTheme.of(context).typography.largeTitle.color,
                     size: 18,
@@ -137,7 +137,7 @@ class _MainPageState extends State<MainPage> {
                 SidebarItem(
                   leading: MacosIcon(
                     CupertinoIcons.umbrella,
-                    color: pageIndex == 3
+                    color: pageIndex == 4
                         ? Colors.white
                         : MacosTheme.of(context).typography.largeTitle.color,
                     size: 18,

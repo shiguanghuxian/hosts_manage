@@ -9,6 +9,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"crypto/x509/pkix"
+	"encoding/json"
 	"encoding/pem"
 	"errors"
 	"fmt"
@@ -47,10 +48,12 @@ var (
 		speedUpHosts:    DefaultSpeedUpHosts,
 		publicDnsServer: make([]string, 0),
 		hostIpAddrsLock: new(sync.Mutex),
+		hostDnsLock:     new(sync.Mutex),
 		proxyAddr:       DefaultProxyAddr,
+		hostDns:         make(map[string]*time.Time),
 		hostIpAddrs:     make(map[string][]*HostTime),
 		dnsCli: &sync.Pool{New: func() interface{} {
-			return &dns.Client{Net: "udp"}
+			return &dns.Client{Net: "tcp-tls"}
 		}},
 		cacheCert: new(sync.Map),
 	}
@@ -58,7 +61,7 @@ var (
 	// 默认需代理一级域名
 	DefaultSpeedUpHosts = []string{"github.com", "githubusercontent.com", "githubassets.com", "github.global.ssl.fastly.net", "stackoverflow.com", "stackexchange.com"}
 	// 默认dns服务列表
-	DefaultPublicDnsServer = []string{"8.8.8.8", "114.114.114.114", "1.1.1.1", "9.9.9.9", "223.5.5.5"}
+	DefaultPublicDnsServer = []string{"1.1.1.1", "9.9.9.9", "223.5.5.5"}
 	// 连接tls证书配置
 	tlsSerConf = &tls.Config{GetCertificate: Socks5ProxyHandle.getCertificate}
 	// 连接证书父级
@@ -78,7 +81,9 @@ type Socks5Proxy struct {
 	cacheCert *sync.Map    // 证书缓存
 
 	hostIpAddrsLock *sync.Mutex            // 主机对于ip更新锁
+	hostDnsLock     *sync.Mutex            // dns查询锁，一个域名只查询一次
 	hostIpAddrs     map[string][]*HostTime // 测速排序,下标主机名值保护测速和ip
+	hostDns         map[string]*time.Time  // 一个域名只查询一次 下标主机名
 	dnsCli          *sync.Pool             // dns查询客户端
 }
 
@@ -175,6 +180,19 @@ func (sp *Socks5Proxy) SetCertPath(certPath string) {
 // 获取主机对于ip列表，从多个dns获取ip
 // 获取ip后首次获取不经测速，返回第一个，后续返回测速第一个
 func (sp *Socks5Proxy) getIpsByHost(host string) []*HostTime {
+	sp.hostDnsLock.Lock()
+	lastTime := sp.hostDns[host]
+	if lastTime != nil {
+		// 10分钟内重复查询不处理
+		if time.Since(*lastTime) < 10*60*time.Second {
+			sp.hostDnsLock.Unlock()
+			return sp.hostIpAddrs[host]
+		}
+	}
+	now := time.Now()
+	sp.hostDns[host] = &now
+	sp.hostDnsLock.Unlock()
+
 	// 新的hosts地址
 	hostIpAddrs := make([]*HostTime, 0)
 
@@ -188,7 +206,7 @@ func (sp *Socks5Proxy) getIpsByHost(host string) []*HostTime {
 			cli := sp.dnsCli.Get().(*dns.Client)
 			defer sp.dnsCli.Put(cli)
 			// 拼一下端口
-			dnsAddr = fmt.Sprintf("%s:53", dnsAddr)
+			dnsAddr = fmt.Sprintf("%s:853", dnsAddr)
 
 			// 先查询ipv6
 			q := &dns.Msg{
@@ -198,47 +216,53 @@ func (sp *Socks5Proxy) getIpsByHost(host string) []*HostTime {
 				Question: []dns.Question{
 					{
 						Name:   dns.Fqdn(host),
-						Qtype:  dns.TypeA,
+						Qtype:  dns.TypeAAAA,
 						Qclass: dns.ClassINET,
 					},
 				},
 			}
-			ctx, cancel := context.WithTimeout(context.Background(), 900*time.Millisecond)
+			ctx, cancel := context.WithTimeout(context.Background(), 3000*time.Millisecond)
 			defer cancel()
 			r, _, err := cli.ExchangeContext(ctx, q, dnsAddr)
 			if err != nil {
 				log.Println("查询ipv6地址错误", dnsAddr, host, err)
-				return
 			}
-			for _, ans := range r.Answer {
-				if a, ok := ans.(*dns.A); ok {
-					hostIpAddrs = append(hostIpAddrs, &HostTime{
-						DnsServer: dnsAddr,
-						DnsQtype:  dns.TypeA,
-						IpAddr:    a.A.String(),
-						ConnTime:  0,
-						IsConn:    true,
-					})
+			if r != nil {
+				for _, ans := range r.Answer {
+					if a, ok := ans.(*dns.AAAA); ok {
+						hostIpAddrs = append(hostIpAddrs, &HostTime{
+							DnsServer: dnsAddr,
+							DnsQtype:  dns.TypeAAAA,
+							IpAddr:    a.AAAA.String(),
+							ConnTime:  0,
+							IsConn:    true,
+						})
+					}
 				}
 			}
+
 			// 查询ipv4地址
-			q.Question[0].Qtype = dns.TypeAAAA
+			ctx, cancel1 := context.WithTimeout(context.Background(), 10000*time.Millisecond)
+			defer cancel1()
+			q.Question[0].Qtype = dns.TypeA
 			r, _, err = cli.ExchangeContext(ctx, q, dnsAddr)
 			if err != nil {
-				log.Println("查询ipv4地址错误", v, host, err)
-				return
+				log.Println("查询ipv4地址错误", host, err)
 			}
-			for _, ans := range r.Answer {
-				if a, ok := ans.(*dns.AAAA); ok {
-					hostIpAddrs = append(hostIpAddrs, &HostTime{
-						DnsServer: dnsAddr,
-						DnsQtype:  dns.TypeAAAA,
-						IpAddr:    a.AAAA.String(),
-						ConnTime:  0,
-						IsConn:    true,
-					})
+			if r != nil {
+				for _, ans := range r.Answer {
+					if a, ok := ans.(*dns.A); ok {
+						hostIpAddrs = append(hostIpAddrs, &HostTime{
+							DnsServer: dnsAddr,
+							DnsQtype:  dns.TypeA,
+							IpAddr:    a.A.String(),
+							ConnTime:  0,
+							IsConn:    true,
+						})
+					}
 				}
 			}
+
 		}(v)
 	}
 	wg.Wait()
@@ -259,9 +283,11 @@ func (sp *Socks5Proxy) getIpsByHost(host string) []*HostTime {
 
 	// 锁一下防止并发访问
 	sp.hostIpAddrsLock.Lock()
-	defer sp.hostIpAddrsLock.Unlock()
 	// 更新hosts地址
 	sp.hostIpAddrs[host] = newHostIpAddrs
+	sp.hostIpAddrsLock.Unlock()
+
+	go sp.sortIpsConnTime(host)
 	return hostIpAddrs
 }
 
@@ -280,7 +306,8 @@ func (sp *Socks5Proxy) getIpByHost(host string) (apAddr string) {
 	sp.hostIpAddrsLock.Unlock()
 
 	hostIpAddrs := sp.getIpsByHost(host)
-	if len(hostIpAddrs) > 0 {
+	// 取第一个，第一个确保可连接，否则不用
+	if len(hostIpAddrs) > 0 && hostIpAddrs[0].IsConn {
 		apAddr = hostIpAddrs[0].IpAddr
 		return
 	}
@@ -308,15 +335,17 @@ func (sp *Socks5Proxy) getIpConnTime(ipAddr string) time.Duration {
 
 // 排序一个主机名对应ip访问速度
 func (sp *Socks5Proxy) sortIpsConnTime(host string) {
+	log.Println("开始排序", host)
 	sp.hostIpAddrsLock.Lock()
 	hostIpAddrs := sp.hostIpAddrs[host]
 	sp.hostIpAddrsLock.Unlock()
 	for _, v := range hostIpAddrs {
 		connTime := sp.getIpConnTime(v.IpAddr)
+		log.Println("ip连接时间", v.IpAddr, connTime.String())
 		if connTime < 0 {
 			v.IsConn = false
-			v.ConnTime = connTime
 		}
+		v.ConnTime = connTime
 	}
 	// <0的往后排
 	sort.Slice(hostIpAddrs, func(i, j int) bool {
@@ -326,11 +355,14 @@ func (sp *Socks5Proxy) sortIpsConnTime(host string) {
 		if hostIpAddrs[j].ConnTime < 0 {
 			return true
 		}
+		log.Println("排序", hostIpAddrs[i].ConnTime, hostIpAddrs[j].ConnTime)
 		return hostIpAddrs[i].ConnTime < hostIpAddrs[j].ConnTime
 	})
 	sp.hostIpAddrsLock.Lock()
 	sp.hostIpAddrs[host] = hostIpAddrs
 	sp.hostIpAddrsLock.Unlock()
+	js, _ := json.Marshal(hostIpAddrs)
+	log.Println("排序结果", host, string(js))
 }
 
 // 定时测速，每10分钟一次
@@ -344,7 +376,7 @@ func (sp *Socks5Proxy) cronIpConnTime() {
 
 	// 执行排序
 	for _, v := range hosts {
-		sp.sortIpsConnTime(v)
+		sp.getIpsByHost(v)
 	}
 }
 
