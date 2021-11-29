@@ -74,9 +74,16 @@ class _MyAppState extends State<MyApp> {
     if (autoDNS == null || autoDNS == '') {
       autoDNS = 'false';
     }
+    String autoSocks5 = prefs.getString("auto_socks5");
+    if (autoSocks5 == null || autoSocks5 == '') {
+      autoSocks5 = 'false';
+    }
     // 如果设置了软件启动运行dns代理则启动服务
     if (autoDNS == 'true') {
       startDnsProxy();
+    }
+    if (autoSocks5 == 'true') {
+      startSocks5Proxy();
     }
     store.dispatch(UpdateLocaleAction(locale));
     store.dispatch(UpdateLangAction(lang));

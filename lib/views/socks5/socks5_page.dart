@@ -1,21 +1,18 @@
-import 'dart:developer';
 import 'dart:io';
 
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:hosts_manage/golib/godart.dart';
-import 'package:hosts_manage/golib/golib.dart';
 import 'package:hosts_manage/i18n/i18n.dart';
 import 'package:hosts_manage/store/store.dart';
-import 'package:hosts_manage/views/common/common.dart';
 import 'package:hosts_manage/views/socks5/bloc/socks5_bloc.dart';
 import 'package:hosts_manage/views/socks5/widgets/socks5_action_button.dart';
+import 'package:hosts_manage/views/socks5/widgets/socks5_auto_start.dart';
 import 'package:hosts_manage/views/socks5/widgets/socks5_cert.dart';
+import 'package:hosts_manage/views/socks5/widgets/socks5_hosts.dart';
+import 'package:hosts_manage/views/socks5/widgets/socks5_local_ip.dart';
 import 'package:macos_ui/macos_ui.dart';
-import 'package:path/path.dart' as path;
 
 // 本地Socks5代理
 class Socks5Page extends StatefulWidget {
@@ -81,7 +78,75 @@ class _Socks5PageState extends State<Socks5Page> {
                           : MediaQuery.of(context).size.height - 90,
                       child: Column(
                         children: [
-                          Socks5Cert(),
+                          SizedBox(
+                            width: 400,
+                            child: MacosListTile(
+                              leading: SizedBox(
+                                width: 120,
+                                child: Text(
+                                  lang.get('socks5.auto_start'),
+                                  style:
+                                      MacosTheme.of(context).typography.title3,
+                                ),
+                              ),
+                              title: const Socks5AutoStart(),
+                            ),
+                          ),
+                          const Divider(
+                            height: 30,
+                          ),
+                          SizedBox(
+                            width: 400,
+                            child: MacosListTile(
+                              leading: SizedBox(
+                                width: 120,
+                                child: Text(
+                                  lang.get('socks5.ca_title'),
+                                  style:
+                                      MacosTheme.of(context).typography.title3,
+                                ),
+                              ),
+                              title: const Socks5Cert(),
+                            ),
+                          ),
+                          const Divider(
+                            height: 30,
+                          ),
+                          SizedBox(
+                            width: 400,
+                            child: MacosListTile(
+                              leading: SizedBox(
+                                width: 120,
+                                child: Text(
+                                  lang.get('socks5.local_ip_title'),
+                                  style:
+                                      MacosTheme.of(context).typography.title3,
+                                ),
+                              ),
+                              title: const Socks5LocalIp(),
+                            ),
+                          ),
+                          const Divider(
+                            height: 30,
+                          ),
+                          SizedBox(
+                              width: 400,
+                              child: MacosListTile(
+                                leading: SizedBox(
+                                  width: 120,
+                                  child: Text(
+                                    lang.get('socks5.hosts_title'),
+                                    style: MacosTheme.of(context)
+                                        .typography
+                                        .title3,
+                                  ),
+                                ),
+                                title: const Socks5Hosts(),
+                              ),
+                            ),
+                            const Divider(
+                              height: 30,
+                            ),
                         ],
                       ),
                     ),

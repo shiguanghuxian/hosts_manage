@@ -121,6 +121,27 @@ func Socks5SetCertPath(str *string) {
 	Socks5ProxyHandle.SetCertPath(*str)
 }
 
+//export SetSpeedUpHosts
+func SetSpeedUpHosts(str *string) {
+	log.Println("设置socks5代理加速域名", *str)
+	strList := strings.Split(*str, "\n")
+	addrs := make([]string, 0)
+	for _, v := range strList {
+		v = strings.TrimSpace(v)
+		if strings.HasPrefix(v, "#") {
+			continue
+		}
+		vArr := strings.Split(v, "#")
+		if len(vArr) > 1 {
+			v = strings.TrimSpace(vArr[0])
+		}
+		if v != "" {
+			addrs = append(addrs, v)
+		}
+	}
+	Socks5ProxyHandle.SetSpeedUpHosts(addrs)
+}
+
 func main() {
 	// DnsProxyHandle.publicDnsServer = []string{"8.8.8.8"}
 	// DnsProxyHandle.Start()

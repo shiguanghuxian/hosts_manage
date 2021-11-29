@@ -166,8 +166,11 @@ func (sp *Socks5Proxy) GetPublicDnsServer() (addrs []string) {
 	return sp.publicDnsServer
 }
 
-// SetPublicDnsServer 设置公网dns服务
+// SetPublicDnsServer 设置加速域名列表
 func (sp *Socks5Proxy) SetSpeedUpHosts(speedUpHosts []string) {
+	if len(speedUpHosts) == 0 {
+		speedUpHosts = DefaultSpeedUpHosts
+	}
 	sp.speedUpHosts = speedUpHosts
 }
 

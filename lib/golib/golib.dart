@@ -82,6 +82,12 @@ final Socks5GenCaCert socks5GenCaCert = _lib
     .lookup<NativeFunction<Pointer<Int8> Function()>>('Socks5GenCaCert')
     .asFunction();
 
+/// 设置加速域名列表
+typedef SetSpeedUpHosts = void Function(Pointer<GoString>);
+final SetSpeedUpHosts socks5SetSpeedUpHosts = _lib
+    .lookup<NativeFunction<Void Function(Pointer<GoString>)>>('SetSpeedUpHosts')
+    .asFunction();
+
 // 根据系统平台加载不同的库文件
 String getLibPath() {
   if (Platform.isMacOS) {

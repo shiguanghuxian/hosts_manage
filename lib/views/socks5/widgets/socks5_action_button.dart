@@ -79,6 +79,10 @@ class _Socks5ActionButtonState extends State<Socks5ActionButton> {
     // 设置根路径
     _socks5SetCertPath();
 
+    // 读取socks5代理加速域名
+    String socks5HostsBody = await readSocks5Hosts();
+    socks5SetSpeedUpHosts(GoString.fromString(socks5HostsBody));
+
     // 启动服务
     socks5Start();
     setState(() {
@@ -102,11 +106,11 @@ class _Socks5ActionButtonState extends State<Socks5ActionButton> {
   /// 获取本机IP
   _getLocalIP() async {
     String ip = await RGetIp.internalIP;
-    // _socks5Bloc.add(ChangeLocalSocks5AddrEvent("$ip:53"));
+    _socks5Bloc.add(ChangeLocalSocks5AddrEvent("$ip:10109"));
     log('内网ip ${ip}');
   }
 
-    // 获取证书根路径
+  // 获取证书根路径
   Future<String> _getCaRootPath() async {
     String rootDir = await getAppRootDirectory();
     Directory caRootDir = Directory(path.join(rootDir, "ca"));

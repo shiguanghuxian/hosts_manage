@@ -93,6 +93,26 @@ startDnsProxy() async {
   });
 }
 
+/// 启动socks5代理
+startSocks5Proxy() async {
+    // 读取socks5代理加速域名
+    String socks5HostsBody = await readSocks5Hosts();
+    socks5SetSpeedUpHosts(GoString.fromString(socks5HostsBody));
+
+  // 启动服务
+  socks5Start();
+
+  // 等半秒钟，看一下是否启动错误
+  Future.delayed(const Duration(milliseconds: 500), () async {
+    Pointer<Int8> errPrt = socks5GetErr();
+    String errStr = errPrt.cast<Utf8>().toDartString();
+    log('启动错误信息: ${errStr}');
+    if (errStr != null && errStr != '') {
+      EasyLoading.showError(errStr);
+    }
+  });
+}
+
 /// 保存公网dns服务列表
 savePublicDNSServer(String str) async {
   if (str.isEmpty) {
@@ -187,4 +207,25 @@ Future<bool> saveHostsToSystem() async {
     return false;
   }
   return true;
+}
+
+/// 保存socks5代理加速域名
+saveSocks5Hosts(String str) async {
+  if (str.isEmpty) {
+    str = '';
+  }
+  log('保存socks5代理加速域名');
+  String rootPath = await getAppRootDirectory();
+  File socks5HostsFile = File(path.join(rootPath, "socks5hosts.json"));
+  await socks5HostsFile.writeAsString(str);
+}
+
+/// 读取socks5代理加速域名
+Future<String> readSocks5Hosts() async {
+  String rootPath = await getAppRootDirectory();
+  File socks5HostsFile = File(path.join(rootPath, "socks5hosts.json"));
+  if (!socks5HostsFile.existsSync()) {
+    return '';
+  }
+  return socks5HostsFile.readAsStringSync();
 }

@@ -12,10 +12,12 @@ class Socks5Bloc extends Bloc<Socks5Event, Socks5State> {
   Stream<Socks5State> mapEventToState(Socks5Event event) async* {
     if (event is ChangeLocalSocks5AddrEvent) {
       yield _mapChangeLocalSocks5Addr(event, state);
+    } else if (event is ChangeSocks5HostsEvent) {
+      yield _mapChangeSocks5Hosts(event, state);
     }
   }
 
-  // 设置本机dns代理地址
+  // 设置本机socks5代理地址
   Socks5State _mapChangeLocalSocks5Addr(
       ChangeLocalSocks5AddrEvent event, Socks5State state) {
     return state.copyWith(
@@ -23,4 +25,11 @@ class Socks5Bloc extends Bloc<Socks5Event, Socks5State> {
     );
   }
 
+  /// 设置需要代理加速域名
+  Socks5State _mapChangeSocks5Hosts(
+      ChangeSocks5HostsEvent event, Socks5State state) {
+    return state.copyWith(
+      socks5Hosts: event.socks5Hosts,
+    );
+  }
 }

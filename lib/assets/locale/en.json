@@ -60,7 +60,14 @@
         "create_ca": "Generate certificate",
         "open_ca_path": "Open certificate directory",
         "create_ca_message": "Please open the certificate directory, install the certificate and trust it",
-        "open_ca_path_btn": "Open"
+        "open_ca_path_btn": "Open",
+        "local_ip_title": "Local socks5 address",
+        "local_ip_copy_tooltip": "Click Copy DNS proxy address",
+        "ca_title": "Cert",
+        "auto_start_label": "Auto running the socks5 proxy",
+        "auto_start": "Auto socks5",
+        "hosts_title": "Accelerated domain name",
+        "hosts_tooltip": "Accelerating the domain name may not be 100% accelerated, which is related to the network environment"
     },
     "settings": {
         "title": "Settings",
