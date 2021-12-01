@@ -26,7 +26,6 @@ import (
 
 	"github.com/armon/go-socks5"
 	"github.com/miekg/dns"
-	"github.com/reiver/go-telnet"
 	"golang.org/x/net/publicsuffix"
 )
 
@@ -322,7 +321,9 @@ func (sp *Socks5Proxy) getIpByHost(host string) (apAddr string) {
 func (sp *Socks5Proxy) getIpConnTime(ipAddr string) time.Duration {
 	t1 := time.Now()
 	for i := 0; i < TestIpConnTimeCount; i++ {
-		conn, err := telnet.DialTo(net.JoinHostPort(ipAddr, "443"))
+		// 尝试建立连接，3秒超时
+		connTimeout := 3 * time.Second
+		conn, err := net.DialTimeout("tcp", net.JoinHostPort(ipAddr, "443"), connTimeout)
 		if err != nil {
 			log.Println("ip测试连接速度错误", err)
 			return -1

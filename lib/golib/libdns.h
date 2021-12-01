@@ -80,6 +80,7 @@ extern GoInt32 Socks5GetIsStart();
 extern char* Socks5GetErr();
 extern char* Socks5GenCaCert();
 extern void Socks5SetCertPath(GoString* str);
+extern void SetSpeedUpHosts(GoString* str);
 
 #ifdef __cplusplus
 }

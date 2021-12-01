@@ -9,6 +9,7 @@ import 'package:hosts_manage/i18n/i18n.dart';
 import 'package:hosts_manage/models/const.dart';
 import 'package:hosts_manage/router/index.dart';
 import 'package:hosts_manage/store/auto_dns.dart';
+import 'package:hosts_manage/store/auto_socks5.dart';
 import 'package:hosts_manage/store/lang_store.dart';
 import 'package:hosts_manage/store/locale_store.dart';
 import 'package:hosts_manage/store/store.dart';
@@ -89,6 +90,7 @@ class _MyAppState extends State<MyApp> {
     store.dispatch(UpdateLangAction(lang));
     store.dispatch(UpdateThemeAction(theme));
     store.dispatch(UpdateAutoDNSAction(autoDNS));
+    store.dispatch(UpdateAutoSocks5Action(autoSocks5));
   }
 
   @override

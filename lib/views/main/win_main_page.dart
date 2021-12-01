@@ -9,6 +9,7 @@ import 'package:hosts_manage/views/about/about_page.dart';
 import 'package:hosts_manage/views/dns/dns_page.dart';
 import 'package:hosts_manage/views/home/home_page.dart';
 import 'package:hosts_manage/views/settings/settings_page.dart';
+import 'package:hosts_manage/views/socks5/socks5_page.dart';
 import 'package:macos_ui/macos_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -40,6 +41,7 @@ class _WinMainPageState extends State<WinMainPage> {
   final List<Widget> pages = [
     const HomePage(),
     const DNSPage(),
+    const Socks5Page(),
     const SettingsPage(),
     const AboutPage(),
   ];
@@ -85,6 +87,13 @@ class _WinMainPageState extends State<WinMainPage> {
               title: Text(lang.get('dns.title')),
               icon: const Icon(
                 CupertinoIcons.personalhotspot,
+                size: 18,
+              ),
+            ),
+            PaneItem(
+              title: Text(lang.get('socks5.title')),
+              icon: const Icon(
+                CupertinoIcons.lock_circle,
                 size: 18,
               ),
             ),
