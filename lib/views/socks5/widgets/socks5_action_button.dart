@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:hosts_manage/event_manage/event_manage.dart';
 import 'package:hosts_manage/golib/godart.dart';
 import 'package:hosts_manage/golib/golib.dart';
 import 'package:hosts_manage/i18n/i18n.dart';
@@ -36,6 +37,13 @@ class _Socks5ActionButtonState extends State<Socks5ActionButton> {
     _initIsRun();
     _socks5Bloc = context.read<Socks5Bloc>();
     _getLocalIP();
+    //监听dns启动变化
+    _subscription = eventBus
+        .on<ChangeContextMenuHomeToSocks5>()
+        .listen((ChangeContextMenuHomeToSocks5 data) {
+      _initIsRun();
+    });
+    _subscription.resume();
   }
 
   Socks5Bloc _socks5Bloc;
@@ -91,6 +99,8 @@ class _Socks5ActionButtonState extends State<Socks5ActionButton> {
     _getLocalIP();
     // 等半秒钟，看一下是否启动错误
     Future.delayed(const Duration(milliseconds: 500), () async {
+      // 通知菜单发生变化
+      eventBus.fire(const ChangeContextMenuSocks5ToHome());
       // 获取go socks5启动错误信息
       Pointer<Int8> errPrt = socks5GetErr();
       String errStr = errPrt.cast<Utf8>().toDartString();

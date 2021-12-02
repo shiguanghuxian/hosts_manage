@@ -67,7 +67,11 @@
         "auto_start_label": "软件启动运行socks5代理",
         "auto_start": "自动启动socks5",
         "hosts_title": "加速域名",
-        "hosts_tooltip": "加速域名，不一定100%可以加速，和网络环境有关"
+        "hosts_tooltip": "加速域名，不一定100%可以加速，和网络环境有关",
+        "socks5_tooltip_macos": "系统偏好设置->网络->高级->代理->SOCKS代理 设置为上述本地socks5地址",
+        "socks5_tooltip_windows": "系统偏好设置->网络->高级->代理->SOCKS代理 设置为上述本地socks5地址",
+        "open_preference": "打开偏好设置",
+        "tray_socks5_proxy": "Socks5代理"
     },
     "settings": {
         "title": "设置",

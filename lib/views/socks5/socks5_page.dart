@@ -12,6 +12,7 @@ import 'package:hosts_manage/views/socks5/widgets/socks5_auto_start.dart';
 import 'package:hosts_manage/views/socks5/widgets/socks5_cert.dart';
 import 'package:hosts_manage/views/socks5/widgets/socks5_hosts.dart';
 import 'package:hosts_manage/views/socks5/widgets/socks5_local_ip.dart';
+import 'package:hosts_manage/views/socks5/widgets/socks5_tooltip.dart';
 import 'package:macos_ui/macos_ui.dart';
 
 // 本地Socks5代理
@@ -146,6 +147,10 @@ class _Socks5PageState extends State<Socks5Page> {
                             ),
                             const Divider(
                               height: 30,
+                            ),
+                            const SizedBox(
+                              width: 400,
+                              child: Socks5Tooltip(),
                             ),
                         ],
                       ),

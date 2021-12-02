@@ -11,3 +11,13 @@ class ChangeContextMenuDNSToHome {
 class ChangeContextMenuHomeToDNS {
   const ChangeContextMenuHomeToDNS();
 }
+
+// 状态菜单变化事件 Socks5通知home
+class ChangeContextMenuSocks5ToHome {
+  const ChangeContextMenuSocks5ToHome();
+}
+
+// 状态菜单变化事件 home通知Socks5
+class ChangeContextMenuHomeToSocks5 {
+  const ChangeContextMenuHomeToSocks5();
+}

@@ -41,6 +41,13 @@ class _HomeHostsListState extends State<HomeHostsList> {
       _setContextMenu();
     });
     _subscription.resume();
+    //监听socks5启动变化
+    _subscriptionSocks5 = eventBus
+        .on<ChangeContextMenuSocks5ToHome>()
+        .listen((ChangeContextMenuSocks5ToHome data) {
+      _setContextMenu();
+    });
+    _subscriptionSocks5.resume();
   }
 
   HomeBloc _homeBloc;
@@ -48,10 +55,12 @@ class _HomeHostsListState extends State<HomeHostsList> {
   final system_tray.AppWindow _appWindow = system_tray.AppWindow();
   bool isInitSystemTray = false; // 是否初始化了状态菜单
   StreamSubscription _subscription;
+  StreamSubscription _subscriptionSocks5;
 
   @override
   void dispose() {
     _subscription?.cancel();
+    _subscriptionSocks5?.cancel();
     super.dispose();
   }
 
@@ -86,6 +95,15 @@ class _HomeHostsListState extends State<HomeHostsList> {
     } else {
       dnsLabel = lang.get('dns.start') + lang.get('dns.tray_dns_proxy');
     }
+    // 获取socks5代理启动情况
+    bool socks5Run = socks5GetIsStart() == 1;
+    String socks5RunLabel = '';
+    if (socks5Run) {
+      socks5RunLabel = lang.get('dns.stop') + lang.get('socks5.tray_socks5_proxy');
+    } else {
+      socks5RunLabel = lang.get('dns.start') + lang.get('socks5.tray_socks5_proxy');
+    }
+
     // 菜单内容
     final List<system_tray.MenuItemBase> menuBase = [
       system_tray.MenuSeparator(),
@@ -104,6 +122,25 @@ class _HomeHostsListState extends State<HomeHostsList> {
             _setContextMenu();
             // 通知菜单发生变化
             eventBus.fire(const ChangeContextMenuHomeToDNS());
+          });
+        },
+      ),
+      system_tray.MenuSeparator(),
+      system_tray.MenuItem(
+        label: socks5RunLabel,
+        onClicked: () async {
+          log(socks5RunLabel);
+          if (socks5Run) {
+            socks5Stop();
+          } else {
+            await startSocks5Proxy();
+          }
+
+          // 等半秒钟
+          Future.delayed(const Duration(milliseconds: 500), () async {
+            _setContextMenu();
+            // 通知菜单发生变化
+            eventBus.fire(const ChangeContextMenuHomeToSocks5());
           });
         },
       ),

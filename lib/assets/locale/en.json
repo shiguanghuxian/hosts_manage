@@ -67,7 +67,11 @@
         "auto_start_label": "Auto running the socks5 proxy",
         "auto_start": "Auto socks5",
         "hosts_title": "Accelerated domain name",
-        "hosts_tooltip": "Accelerating the domain name may not be 100% accelerated, which is related to the network environment"
+        "hosts_tooltip": "Accelerating the domain name may not be 100% accelerated, which is related to the network environment",
+        "socks5_tooltip_macos": "System Preferences -> Network -> Advanced -> proxy -> SOCKS Proxy is set to the above local Socks5 address",
+        "socks5_tooltip_windows": "System Preferences -> Network -> Advanced -> proxy -> SOCKS Proxy is set to the above local Socks5 address",
+        "open_preference": "Open preferences",
+        "tray_socks5_proxy": "Socks5 proxy"
     },
     "settings": {
         "title": "Settings",
