@@ -79,7 +79,10 @@
         "lang_title": "语言：",
         "theme_auto": "自动",
         "theme_light": "浅色",
-        "theme_dark": "深色"
+        "theme_dark": "深色",
+        "hostsmutex_title": "Hosts互斥",
+        "hostsmutex_label": "Hosts配置是否互斥",
+        "hostsmutex_tooltip": "当选中时，hosts配置中只能启用一个hosts配置项"
     },
     "about": {
         "title": "关于"

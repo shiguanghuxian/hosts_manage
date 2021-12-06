@@ -11,6 +11,7 @@ import 'package:hosts_manage/router/index.dart';
 import 'package:hosts_manage/store/auto_dns.dart';
 import 'package:hosts_manage/store/auto_socks5.dart';
 import 'package:hosts_manage/store/lang_store.dart';
+import 'package:hosts_manage/store/locale_hostsmutex.dart';
 import 'package:hosts_manage/store/locale_store.dart';
 import 'package:hosts_manage/store/store.dart';
 import 'package:hosts_manage/store/theme_store.dart';
@@ -86,11 +87,18 @@ class _MyAppState extends State<MyApp> {
     if (autoSocks5 == 'true') {
       startSocks5Proxy();
     }
+
+    String hostsMutexStr = prefs.getString("hostsmutex");
+    if (hostsMutexStr == null || hostsMutexStr == '') {
+      hostsMutexStr = 'false';
+    }
+
     store.dispatch(UpdateLocaleAction(locale));
     store.dispatch(UpdateLangAction(lang));
     store.dispatch(UpdateThemeAction(theme));
     store.dispatch(UpdateAutoDNSAction(autoDNS));
     store.dispatch(UpdateAutoSocks5Action(autoSocks5));
+    store.dispatch(UpdateHostsMutexAction(hostsMutexStr == 'true'));
   }
 
   @override

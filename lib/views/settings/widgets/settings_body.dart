@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:hosts_manage/i18n/i18n.dart';
 import 'package:hosts_manage/models/const.dart';
 import 'package:hosts_manage/store/lang_store.dart';
+import 'package:hosts_manage/store/locale_hostsmutex.dart';
 import 'package:hosts_manage/store/locale_store.dart';
 import 'package:hosts_manage/store/store.dart';
 import 'package:hosts_manage/store/theme_store.dart';
@@ -58,10 +61,10 @@ class _SettingsBodyState extends State<SettingsBody> {
             child: Column(
               children: [
                 SizedBox(
-                  width: 200,
+                  width: 360,
                   child: ListTile(
                     leading: SizedBox(
-                      width: 60,
+                      width: 90,
                       child: Text(
                         lang.get('settings.theme_title'),
                         style: MacosTheme.of(context).typography.title3,
@@ -154,10 +157,10 @@ class _SettingsBodyState extends State<SettingsBody> {
                   height: 30,
                 ),
                 SizedBox(
-                  width: 200,
+                  width: 360,
                   child: ListTile(
                     leading: SizedBox(
-                      width: 60,
+                      width: 90,
                       child: Text(
                         lang.get('settings.lang_title'),
                         style: MacosTheme.of(context).typography.title3,
@@ -220,6 +223,46 @@ class _SettingsBodyState extends State<SettingsBody> {
                     ),
                   ),
                 ),
+                const Divider(
+                  height: 30,
+                ),
+                SizedBox(
+                  width: 360,
+                  child: ListTile(
+                    leading: SizedBox(
+                      width: 90,
+                      child: Text(
+                        lang.get('settings.hostsmutex_title'),
+                        style: MacosTheme.of(context).typography.title3,
+                      ),
+                    ),
+                    title: MacosTooltip(
+                      message: lang.get('settings.hostsmutex_tooltip'),
+                      child: Row(
+                        children: [
+                          MacosCheckbox(
+                            value: StoreProvider.of<ZState>(context)
+                                .state
+                                .hostsMutex,
+                            onChanged: (bool val) {
+                              log('选中 ${val.toString()}');
+                              StoreProvider.of<ZState>(context)
+                                  .dispatch(UpdateHostsMutexAction(val));
+                            },
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(left: 3),
+                            child: Text(
+                              lang.get('settings.hostsmutex_label'),
+                              maxLines: 2,
+                              style: MacosTheme.of(context).typography.body,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
               ],
             ),
           ),

@@ -43,6 +43,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     for (var item in state.hostsList) {
       if (item.key == event.selectedHosts) {
         item.check = event.isCheck;
+      } else if (item.isBaseHosts) { // 基础配置保证为选中
+        item.check = true;
+      } else if (event.hostsMutex) {
+        // 不是基础配置且开启互斥，则设置为false
+        item.check = false;
       }
       hostsList.add(item);
     }

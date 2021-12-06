@@ -44,6 +44,7 @@ class _HostsListWidgetState extends State<HostsListWidget> {
     return StoreBuilder<ZState>(
       builder: (context, store) {
         I18N lang = StoreProvider.of<ZState>(context).state.lang;
+        bool hostsMutex = StoreProvider.of<ZState>(context).state.hostsMutex;
         return BlocBuilder<HomeBloc, HomeState>(
           buildWhen: (previous, current) {
             return previous.changeHostList != current.changeHostList;
@@ -107,7 +108,10 @@ class _HostsListWidgetState extends State<HostsListWidget> {
                       onChanged: (value) {
                         log('点击 ${value} -- ${widget.hostsInfoModel.isBaseHosts}');
                         context.read<HomeBloc>().add(ChangeSelectedHostsEvent(
-                            widget.hostsInfoModel.key, value, context));
+                            widget.hostsInfoModel.key,
+                            value,
+                            hostsMutex,
+                            context));
                       },
                     ),
                   ),

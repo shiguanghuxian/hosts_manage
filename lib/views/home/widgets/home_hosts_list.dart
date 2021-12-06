@@ -56,6 +56,7 @@ class _HomeHostsListState extends State<HomeHostsList> {
   bool isInitSystemTray = false; // 是否初始化了状态菜单
   StreamSubscription _subscription;
   StreamSubscription _subscriptionSocks5;
+  bool hostsMutex = false;
 
   @override
   void dispose() {
@@ -99,9 +100,11 @@ class _HomeHostsListState extends State<HomeHostsList> {
     bool socks5Run = socks5GetIsStart() == 1;
     String socks5RunLabel = '';
     if (socks5Run) {
-      socks5RunLabel = lang.get('dns.stop') + lang.get('socks5.tray_socks5_proxy');
+      socks5RunLabel =
+          lang.get('dns.stop') + lang.get('socks5.tray_socks5_proxy');
     } else {
-      socks5RunLabel = lang.get('dns.start') + lang.get('socks5.tray_socks5_proxy');
+      socks5RunLabel =
+          lang.get('dns.start') + lang.get('socks5.tray_socks5_proxy');
     }
 
     // 菜单内容
@@ -173,9 +176,8 @@ class _HomeHostsListState extends State<HomeHostsList> {
           label: item.name,
           onClicked: () {
             log('Show ${item.name}');
-            context
-                .read<HomeBloc>()
-                .add(ChangeSelectedHostsEvent(item.key, !item.check, context));
+            context.read<HomeBloc>().add(ChangeSelectedHostsEvent(
+                item.key, !item.check, hostsMutex, context));
           },
         ),
       );
@@ -189,6 +191,7 @@ class _HomeHostsListState extends State<HomeHostsList> {
     return StoreBuilder<ZState>(
       builder: (context, store) {
         lang = StoreProvider.of<ZState>(context).state.lang;
+        hostsMutex = StoreProvider.of<ZState>(context).state.hostsMutex;
         // 防止重复初始化顶部菜单
         if (!isInitSystemTray) {
           initSystemTray();

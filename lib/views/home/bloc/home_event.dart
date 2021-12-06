@@ -9,14 +9,15 @@ class ChangeSelectedHostsEvent extends HomeEvent {
   final String selectedHosts;
   final bool isCheck;
   final BuildContext context;
+  final bool hostsMutex;
 
-  const ChangeSelectedHostsEvent(this.selectedHosts, this.isCheck, this.context);
-
-  @override
-  List<Object> get props => [selectedHosts, isCheck];
+  const ChangeSelectedHostsEvent(this.selectedHosts, this.isCheck, this.hostsMutex, this.context);
 
   @override
-  String toString() => 'ChangeSelectedHostsEvent { $selectedHosts $isCheck }';
+  List<Object> get props => [selectedHosts, isCheck, hostsMutex];
+
+  @override
+  String toString() => 'ChangeSelectedHostsEvent { $selectedHosts $isCheck $hostsMutex }';
 }
 
 /// 初始化hosts配置列表

@@ -79,7 +79,10 @@
         "lang_title": "Lang",
         "theme_auto": "Auto",
         "theme_light": "Light",
-        "theme_dark": "Dark"
+        "theme_dark": "Dark",
+        "hostsmutex_title": "Hosts mutex",
+        "hostsmutex_label": "Are hosts configurations mutually exclusive",
+        "hostsmutex_tooltip": "When selected, only one hosts configuration item can be enabled in the hosts configuration"
     },
     "about": {
         "title": "About"
