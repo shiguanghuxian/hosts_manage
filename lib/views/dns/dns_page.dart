@@ -46,13 +46,15 @@ class _DNSPageState extends State<DNSPage> {
           return _dnsBloc;
         },
         child: MacosScaffold(
-          titleBar: Platform.isWindows
+          toolBar: Platform.isWindows
               ? null
-              : TitleBar(
+              : ToolBar(
                   title: Text(lang.get('dns.title')),
+                  centerTitle: true,
                   actions: [
-                    MacosIconButton(
-                      backgroundColor: MacosColors.transparent,
+                    ToolBarIconButton(
+                      label: lang.get('public.open_main_menu'),
+                      showLabel: false,
                       icon: const MacosIcon(
                         CupertinoIcons.sidebar_left,
                         color: MacosColors.systemGrayColor,
@@ -61,7 +63,6 @@ class _DNSPageState extends State<DNSPage> {
                         MacosWindowScope.of(context).toggleSidebar();
                       },
                     ),
-                    const SizedBox(width: 10),
                   ],
                 ),
           children: [

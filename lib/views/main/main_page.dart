@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:hosts_manage/i18n/i18n.dart';
 import 'package:hosts_manage/store/store.dart';
@@ -73,14 +72,14 @@ class _MainPageState extends State<MainPage> {
           children: pages,
         ),
         sidebar: Sidebar(
-          minWidth: 180,
+          minWidth: 210,
           bottom: Padding(
             padding: const EdgeInsets.all(16.0),
             child: MacosTooltip(
               message: '点击查看作者开源主页',
               child: MacosListTile(
                 onClick: () {
-                  launch('https://github.com/shiguanghuxian');
+                  launchUrl(Uri.parse('https://github.com/shiguanghuxian'));
                 },
                 leading: const MacosIcon(CupertinoIcons.profile_circled),
                 title: const Text('时光弧线'),
@@ -93,6 +92,7 @@ class _MainPageState extends State<MainPage> {
               currentIndex: pageIndex,
               onChanged: (i) => setState(() => pageIndex = i),
               scrollController: controller,
+              itemSize: SidebarItemSize.large,
               items: [
                 SidebarItem(
                   leading: MacosIcon(

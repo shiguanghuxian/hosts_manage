@@ -118,7 +118,7 @@ class _WinMainPageState extends State<WinMainPage> {
                 message: '点击查看作者开源主页',
                 child: MacosListTile(
                   onClick: () {
-                    launch('https://github.com/shiguanghuxian');
+                    launchUrl(Uri.parse('https://github.com/shiguanghuxian'));
                   },
                   leading: const MacosIcon(CupertinoIcons.profile_circled),
                   title: const Text('时光弧线'),

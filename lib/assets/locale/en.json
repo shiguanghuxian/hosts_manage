@@ -11,7 +11,8 @@
         "save": "Save",
         "exit": "Exit",
         "close": "Close",
-        "copied": "Copied"
+        "copied": "Copied",
+        "open_main_menu": "Expand or close"
     },
     "home": {
         "title": "Hosts Manage",

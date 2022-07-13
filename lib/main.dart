@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 
 import 'package:fluent_ui/fluent_ui.dart' as fluent_ui;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -24,13 +23,17 @@ import 'package:hosts_manage/views/main/win_main_page.dart';
 import 'package:macos_ui/macos_ui.dart';
 import 'package:redux/redux.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:window_manager/window_manager.dart';
 
 void main() async {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  MyApp({Key key}) : super(key: key);
+  const MyApp({Key key}) : super(key: key);
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -103,7 +106,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    print('语言测试 ${lang.get("public.app_name")} -- ${_mode}');
+    log('语言测试 ${lang.get("public.app_name")} -- ${_mode}');
 
     return StoreProvider(
       store: store,

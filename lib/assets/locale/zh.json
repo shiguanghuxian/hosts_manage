@@ -11,7 +11,8 @@
         "save": "保存",
         "exit": "退出",
         "close": "关闭",
-        "copied": "复制成功"
+        "copied": "复制成功",
+        "open_main_menu": "展开or关闭"
     },
     "home": {
         "title": "Hosts管理",

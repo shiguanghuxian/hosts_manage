@@ -47,13 +47,15 @@ class _Socks5PageState extends State<Socks5Page> {
           return _socks5Bloc;
         },
         child: MacosScaffold(
-          titleBar: Platform.isWindows
+          toolBar: Platform.isWindows
               ? null
-              : TitleBar(
+              : ToolBar(
                   title: Text(lang.get('socks5.title')),
+                  centerTitle: true,
                   actions: [
-                    MacosIconButton(
-                      backgroundColor: MacosColors.transparent,
+                    ToolBarIconButton(
+                      label: lang.get('public.open_main_menu'),
+                      showLabel: false,
                       icon: const MacosIcon(
                         CupertinoIcons.sidebar_left,
                         color: MacosColors.systemGrayColor,
@@ -62,7 +64,6 @@ class _Socks5PageState extends State<Socks5Page> {
                         MacosWindowScope.of(context).toggleSidebar();
                       },
                     ),
-                    const SizedBox(width: 10),
                   ],
                 ),
           children: [
@@ -131,27 +132,26 @@ class _Socks5PageState extends State<Socks5Page> {
                             height: 30,
                           ),
                           SizedBox(
-                              width: 400,
-                              child: MacosListTile(
-                                leading: SizedBox(
-                                  width: 120,
-                                  child: Text(
-                                    lang.get('socks5.hosts_title'),
-                                    style: MacosTheme.of(context)
-                                        .typography
-                                        .title3,
-                                  ),
+                            width: 400,
+                            child: MacosListTile(
+                              leading: SizedBox(
+                                width: 120,
+                                child: Text(
+                                  lang.get('socks5.hosts_title'),
+                                  style:
+                                      MacosTheme.of(context).typography.title3,
                                 ),
-                                title: const Socks5Hosts(),
                               ),
+                              title: const Socks5Hosts(),
                             ),
-                            const Divider(
-                              height: 30,
-                            ),
-                            const SizedBox(
-                              width: 400,
-                              child: Socks5Tooltip(),
-                            ),
+                          ),
+                          const Divider(
+                            height: 30,
+                          ),
+                          const SizedBox(
+                            width: 400,
+                            child: Socks5Tooltip(),
+                          ),
                         ],
                       ),
                     ),

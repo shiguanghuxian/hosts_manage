@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -17,7 +16,8 @@ import 'package:hosts_manage/views/home/bloc/home_bloc.dart';
 import 'package:hosts_manage/views/home/widgets/hosts_add_widget.dart';
 import 'package:hosts_manage/views/home/widgets/hosts_list_widget.dart';
 import 'package:macos_ui/macos_ui.dart';
-import 'package:system_tray/system_tray.dart' as system_tray;
+import 'package:tray_manager/tray_manager.dart' as tray_manager;
+import 'package:window_manager/window_manager.dart';
 
 // 已存在的hosts配置列表
 class HomeHostsList extends StatefulWidget {
@@ -29,10 +29,12 @@ class HomeHostsList extends StatefulWidget {
   _HomeHostsListState createState() => _HomeHostsListState();
 }
 
-class _HomeHostsListState extends State<HomeHostsList> {
+class _HomeHostsListState extends State<HomeHostsList>
+    with tray_manager.TrayListener {
   @override
   void initState() {
     super.initState();
+    tray_manager.trayManager.addListener(this);
     _homeBloc = context.read<HomeBloc>();
     //监听dns启动变化
     _subscription = eventBus
@@ -48,11 +50,12 @@ class _HomeHostsListState extends State<HomeHostsList> {
       _setContextMenu();
     });
     _subscriptionSocks5.resume();
+    // 初始化状态栏图标
+    initSystemTray();
   }
 
   HomeBloc _homeBloc;
   I18N lang;
-  final system_tray.AppWindow _appWindow = system_tray.AppWindow();
   bool isInitSystemTray = false; // 是否初始化了状态菜单
   StreamSubscription _subscription;
   StreamSubscription _subscriptionSocks5;
@@ -60,29 +63,30 @@ class _HomeHostsListState extends State<HomeHostsList> {
 
   @override
   void dispose() {
+    tray_manager.trayManager.removeListener(this);
     _subscription?.cancel();
     _subscriptionSocks5?.cancel();
     super.dispose();
   }
 
   // 状态栏菜单
-  final system_tray.SystemTray _systemTray = system_tray.SystemTray();
   Future<void> initSystemTray() async {
+    if (isInitSystemTray) {
+      return;
+    }
+    isInitSystemTray = true;
     // 图标
     String path = 'lib/assets/images/icon.png';
     if (Platform.isWindows) {
       path = "lib/assets/images/icon.ico";
     }
 
-    print('再次init菜单');
+    log('再次init菜单');
+    // 图标、标题、提示
+    await tray_manager.trayManager.setIcon(path);
+    // tray_manager.trayManager.setTitle(lang.get('public.app_name'));
+    tray_manager.trayManager.setToolTip(lang.get('home.icon_tooltip'));
 
-    // We first init the systray menu and then add the menu entries
-    await _systemTray.initSystemTray(
-      title: lang.get('public.app_name'),
-      iconPath: path,
-      toolTip: lang.get('home.icon_tooltip'),
-      leftMouseShowMenu: true,
-    );
     await _setContextMenu();
   }
 
@@ -107,12 +111,13 @@ class _HomeHostsListState extends State<HomeHostsList> {
           lang.get('dns.start') + lang.get('socks5.tray_socks5_proxy');
     }
 
-    // 菜单内容
-    final List<system_tray.MenuItemBase> menuBase = [
-      system_tray.MenuSeparator(),
-      system_tray.MenuItem(
+    // 菜单列表
+    List<tray_manager.MenuItem> menuBase = [
+      tray_manager.MenuItem.separator(),
+      tray_manager.MenuItem(
+        key: 'menu_dns',
         label: dnsLabel,
-        onClicked: () async {
+        onClick: (tray_manager.MenuItem it) async {
           log(dnsLabel);
           if (dnsRun) {
             stopDNS();
@@ -128,10 +133,11 @@ class _HomeHostsListState extends State<HomeHostsList> {
           });
         },
       ),
-      system_tray.MenuSeparator(),
-      system_tray.MenuItem(
+      tray_manager.MenuItem.separator(),
+      tray_manager.MenuItem(
+        key: 'menu_socks5',
         label: socks5RunLabel,
-        onClicked: () async {
+        onClick: (tray_manager.MenuItem it) async {
           log(socks5RunLabel);
           if (socks5Run) {
             socks5Stop();
@@ -147,34 +153,33 @@ class _HomeHostsListState extends State<HomeHostsList> {
           });
         },
       ),
-      system_tray.MenuSeparator(),
-      system_tray.MenuItem(
-        label: lang.get('home.show_edit_hosts'),
-        onClicked: () {
-          log(lang.get('home.show_edit_hosts'));
-          _appWindow.show();
-        },
-      ),
-      system_tray.MenuSeparator(),
-      system_tray.MenuItem(
-        label: lang.get('public.exit'),
-        onClicked: () {
-          log('Exit');
-          exit(0);
-        },
-      ),
+      tray_manager.MenuItem.separator(),
+      tray_manager.MenuItem(
+          key: 'menu_show_edit_hosts',
+          label: lang.get('home.show_edit_hosts'),
+          onClick: (tray_manager.MenuItem it) async {
+            log(lang.get('home.show_edit_hosts'));
+          }),
+      tray_manager.MenuItem.separator(),
+      tray_manager.MenuItem(
+          key: 'menu_exit',
+          label: lang.get('public.exit'),
+          onClick: (tray_manager.MenuItem it) async {
+            log('Exit');
+            exit(0);
+          }),
     ];
 
-    final List<system_tray.MenuItemBase> menu = [];
+    final List<tray_manager.MenuItem> menus = [];
     for (HostsInfoModel item in _homeBloc.state.hostsList) {
       if (item.isBaseHosts == true) {
         continue;
       }
-      menu.add(
-        system_tray.MenuItem(
-          state: item.check,
+      menus.add(
+        tray_manager.MenuItem(
+          checked: item.check,
           label: item.name,
-          onClicked: () {
+          onClick: (tray_manager.MenuItem it) {
             log('Show ${item.name}');
             context.read<HomeBloc>().add(ChangeSelectedHostsEvent(
                 item.key, !item.check, hostsMutex, context));
@@ -182,8 +187,10 @@ class _HomeHostsListState extends State<HomeHostsList> {
         ),
       );
     }
-    menu.addAll(menuBase);
-    await _systemTray.setContextMenu(menu);
+    menus.addAll(menuBase);
+    await tray_manager.trayManager.setContextMenu(tray_manager.Menu(
+      items: menus,
+    ));
   }
 
   @override
@@ -287,5 +294,54 @@ class _HomeHostsListState extends State<HomeHostsList> {
         );
       },
     );
+  }
+
+  @override
+  void onTrayIconMouseDown() {
+    log('onTrayIconMouseDown');
+    tray_manager.trayManager.popUpContextMenu();
+  }
+
+  @override
+  void onTrayIconMouseUp() {
+    log('onTrayIconMouseUp');
+  }
+
+  @override
+  void onTrayIconRightMouseDown() {
+    log('onTrayIconRightMouseDown');
+    // trayManager.popUpContextMenu();
+  }
+
+  @override
+  void onTrayIconRightMouseUp() {
+    log('onTrayIconRightMouseUp');
+    tray_manager.trayManager.popUpContextMenu();
+  }
+
+  @override
+  void onTrayMenuItemClick(tray_manager.MenuItem menuItem) {
+    log(menuItem.toJson().toString());
+    switch (menuItem.key) {
+      case 'menu_show_edit_hosts':
+        _showOrHideWindow();
+        break;
+      default:
+    }
+  }
+
+  // 隐藏显示窗口
+  _showOrHideWindow() async {
+    bool isVisible = await windowManager.isVisible();
+    log('当前显示状态 $isVisible');
+    if (isVisible) {
+      await windowManager.show();
+      await windowManager.focus();
+    }
+    bool isMinimized = await windowManager.isMinimized();
+    if (isMinimized) {
+      await windowManager.restore();
+      await windowManager.focus();
+    }
   }
 }

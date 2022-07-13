@@ -34,10 +34,24 @@ class _AboutPageState extends State<AboutPage> {
     return StoreBuilder<ZState>(builder: (context, store) {
       I18N lang = StoreProvider.of<ZState>(context).state.lang;
       return MacosScaffold(
-        titleBar: Platform.isWindows
+        toolBar: Platform.isWindows
             ? null
-            : TitleBar(
+            : ToolBar(
                 title: Text(lang.get('about.title')),
+                centerTitle: true,
+                actions: [
+                  ToolBarIconButton(
+                    label: lang.get('public.open_main_menu'),
+                    showLabel: false,
+                    icon: const MacosIcon(
+                      CupertinoIcons.sidebar_left,
+                      color: MacosColors.systemGrayColor,
+                    ),
+                    onPressed: () {
+                      MacosWindowScope.of(context).toggleSidebar();
+                    },
+                  ),
+                ],
               ),
         children: [
           ContentArea(builder: (context, scrollController) {
