@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:hosts_manage/components/macos_alert_dialog.dart';
@@ -15,7 +14,7 @@ import 'package:macos_ui/macos_ui.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// 系统hosts内容变化
-changeSystemHosts(
+Future<bool> changeSystemHosts(
     BuildContext context) async {
   I18N lang = StoreProvider.of<ZState>(context).state.lang;
   // 更新hosts 或刷新dns服务
@@ -42,9 +41,9 @@ changeSystemHosts(
       messageBody = Text(lang.get('home.save_windows_err'));
     } else {
       EasyLoading.showError('Save hosts error');
-      return;
+      return false;
     }
-    showMacOSAlertDialog(
+    await showMacOSAlertDialog(
       context: context,
       builder: (BuildContext context) => MacOSAlertDialog(
         message: Container(
@@ -78,5 +77,7 @@ changeSystemHosts(
         ),
       ),
     );
+    return true;
   }
+  return isOK;
 }

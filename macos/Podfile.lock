@@ -1,7 +1,5 @@
 PODS:
   - FlutterMacOS (1.0.0)
-  - macos_ui (0.1.0):
-    - FlutterMacOS
   - path_provider_macos (0.0.1):
     - FlutterMacOS
   - r_get_ip (0.0.1):
@@ -19,7 +17,6 @@ PODS:
 
 DEPENDENCIES:
   - FlutterMacOS (from `Flutter/ephemeral`)
-  - macos_ui (from `Flutter/ephemeral/.symlinks/plugins/macos_ui/macos`)
   - path_provider_macos (from `Flutter/ephemeral/.symlinks/plugins/path_provider_macos/macos`)
   - r_get_ip (from `Flutter/ephemeral/.symlinks/plugins/r_get_ip/macos`)
   - screen_retriever (from `Flutter/ephemeral/.symlinks/plugins/screen_retriever/macos`)
@@ -31,8 +28,6 @@ DEPENDENCIES:
 EXTERNAL SOURCES:
   FlutterMacOS:
     :path: Flutter/ephemeral
-  macos_ui:
-    :path: Flutter/ephemeral/.symlinks/plugins/macos_ui/macos
   path_provider_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/path_provider_macos/macos
   r_get_ip:
@@ -50,7 +45,6 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   FlutterMacOS: 57701585bf7de1b3fc2bb61f6378d73bbdea8424
-  macos_ui: 125c911559d646194386d84c017ad6819122e2db
   path_provider_macos: 3c0c3b4b0d4a76d2bf989a913c2de869c5641a19
   r_get_ip: 6359e31b5cf2d9122e6da33bcd1ddb80e4f5cc25
   screen_retriever: 59634572a57080243dd1bf715e55b6c54f241a38

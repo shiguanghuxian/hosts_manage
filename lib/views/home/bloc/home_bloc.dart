@@ -39,11 +39,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   /// 切换选中的hosts
   Future<HomeState> _mapChangeSelectedHosts(
       ChangeSelectedHostsEvent event, HomeState state) async {
+    List<HostsInfoModel> oldHostsList = [];
+    // 新的开关启用列表
     List<HostsInfoModel> hostsList = [];
     for (var item in state.hostsList) {
+      // 保存原数据，用于还原
+      oldHostsList.add(HostsInfoModel.fromJson(item.toJson()));
+
+      // 处理切换打开信息
       if (item.key == event.selectedHosts) {
         item.check = event.isCheck;
-      } else if (item.isBaseHosts) { // 基础配置保证为选中
+      } else if (item.isBaseHosts) {
+        // 基础配置保证为选中
         item.check = true;
       } else if (event.hostsMutex) {
         // 不是基础配置且开启互斥，则设置为false
@@ -51,12 +58,26 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
       hostsList.add(item);
     }
+
     // 更新本地hosts配置列表
     File hostsFile = await getHostsJsonFile();
     await hostsFile.writeAsString(json.encode(hostsList),
         flush: true); // 写入默认列表
 
-    await changeSystemHosts(event.context);
+    // 保存hosts到系统hosts
+    bool isSaveOk = await changeSystemHosts(event.context);
+    log('保存hosts失败了 $isSaveOk');
+    // 保存失败，不切换
+    if (!isSaveOk) {
+      // 还原本地hosts配置列表
+      File hostsFile = await getHostsJsonFile();
+      await hostsFile.writeAsString(json.encode(oldHostsList),
+          flush: true); // 写入默认列表
+      return state.copyWith(
+        hostsList: oldHostsList,
+        changeHostList: state.changeHostList + 1,
+      );
+    }
 
     log('需要更新hosts');
     return state.copyWith(

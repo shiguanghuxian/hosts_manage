@@ -337,11 +337,15 @@ class _HomeHostsListState extends State<HomeHostsList>
     if (isVisible) {
       await windowManager.show();
       await windowManager.focus();
+      return;
     }
     bool isMinimized = await windowManager.isMinimized();
     if (isMinimized) {
       await windowManager.restore();
       await windowManager.focus();
+      return;
     }
+    await windowManager.show();
+    await windowManager.focus();
   }
 }

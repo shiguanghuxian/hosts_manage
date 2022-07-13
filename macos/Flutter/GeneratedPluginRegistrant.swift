@@ -5,7 +5,6 @@
 import FlutterMacOS
 import Foundation
 
-import macos_ui
 import path_provider_macos
 import r_get_ip
 import screen_retriever
@@ -15,7 +14,6 @@ import url_launcher_macos
 import window_manager
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
-  MacOSUiPlugin.register(with: registry.registrar(forPlugin: "MacOSUiPlugin"))
   PathProviderPlugin.register(with: registry.registrar(forPlugin: "PathProviderPlugin"))
   RGetIpPlugin.register(with: registry.registrar(forPlugin: "RGetIpPlugin"))
   ScreenRetrieverPlugin.register(with: registry.registrar(forPlugin: "ScreenRetrieverPlugin"))

@@ -92,7 +92,6 @@ class _MainPageState extends State<MainPage> {
               currentIndex: pageIndex,
               onChanged: (i) => setState(() => pageIndex = i),
               scrollController: controller,
-              itemSize: SidebarItemSize.large,
               items: [
                 SidebarItem(
                   leading: MacosIcon(
