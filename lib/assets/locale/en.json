@@ -38,7 +38,10 @@
         "switch_main_menu_tooltip": "Click to switch the left main menu hidden",
         "copy_sandbox_shell": "Copy command",
         "copy_sandbox_message": "If you do not have permission to modify the system hosts file, please execute the following command to modify the permissions of the hosts file.",
-        "save_windows_err": "You do not have permission to modify the system hosts file. Please open the application as an administrator again"
+        "save_windows_err": "You do not have permission to modify the system hosts file. Please open the application as an administrator again",
+        "save_macos_err": "No permission to operate hosts file, please try again",
+        "system_password_title": "Please enter your computer password",
+        "system_password_is_empty": "Password cannot be empty"
     },
     "dns": {
         "title": "Local DNS proxy",

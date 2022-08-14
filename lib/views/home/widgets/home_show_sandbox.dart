@@ -14,14 +14,13 @@ import 'package:macos_ui/macos_ui.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// 系统hosts内容变化
-Future<bool> changeSystemHosts(
-    BuildContext context) async {
+Future<bool> changeSystemHosts(BuildContext context) async {
   I18N lang = StoreProvider.of<ZState>(context).state.lang;
   // 更新hosts 或刷新dns服务
   await syncDataDnsProxy(); // dns代理
-  bool isOK = await saveHostsToSystem(); // 本地hosts文件
+  int isOK = await saveHostsToSystem(context, lang); // 本地hosts文件
   // macos切是沙箱弹框提示,windows用户提示管理员打开应用
-  if (!isOK) {
+  if (isOK == 0) {
     Widget messageBody;
     String shellStr;
     if (ModelConst.sandboxEnable && Platform.isMacOS) {
@@ -77,7 +76,7 @@ Future<bool> changeSystemHosts(
         ),
       ),
     );
-    return true;
+    // return isOK > 0;
   }
-  return isOK;
+  return isOK == 1;
 }

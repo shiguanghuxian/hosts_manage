@@ -61,6 +61,7 @@ dependencies:
   event_bus: ^2.0.0
   tray_manager: ^0.1.8
   window_manager: ^0.2.5
+  shell: ^2.0.0
 
 dev_dependencies:
   flutter_test:

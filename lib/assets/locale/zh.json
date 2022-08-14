@@ -38,7 +38,10 @@
         "switch_main_menu_tooltip": "点击切换左侧主菜单隐藏显示",
         "copy_sandbox_shell": "复制命令",
         "copy_sandbox_message": "无权限修改系统hosts文件，请执行以下命令修改hosts文件权限，如果依然不行请下载完整版app",
-        "save_windows_err": "无权限修改系统hosts文件，请重新以管理员身份打开应用"
+        "save_windows_err": "无权限修改系统hosts文件，请重新以管理员身份打开应用",
+        "save_macos_err": "无权限修改系统hosts文件，请重试",
+        "system_password_title": "请输入电脑密码",
+        "system_password_is_empty": "密码不能为空"
     },
     "dns": {
         "title": "本地DNS代理",

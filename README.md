@@ -37,3 +37,15 @@ windows 打包工具
 PS c:\src\flutter_project\> flutter build windows
 PS c:\src\flutter_project\> flutter pub run msix:create
 ```
+
+####
+macos12无法写入问题
+
+```
+    let cmd = [
+      `echo '${sudo_pswd}' | sudo -S chmod 777 ${sys_hosts_path}`,
+      `cat "${tmp_fn}" > ${sys_hosts_path}`,
+      `echo '${sudo_pswd}' | sudo -S chmod 644 ${sys_hosts_path}`,
+      // , 'rm -rf ' + tmp_fn
+    ].join(' && ')
+```

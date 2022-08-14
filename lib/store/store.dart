@@ -12,7 +12,7 @@ class ZState {
   String theme = "auto"; // 语言
   String autoDNS = "false"; // 默认软件启动不打开dns
   String autoSocks5 = "false"; // 默认软件启动不打开socks5
-  bool hostsMutex = false; // 默认软件启动不打开socks5
+  bool hostsMutex = true; // 默认软件启动hosts配置互斥
 
   ZState({
     this.locale,

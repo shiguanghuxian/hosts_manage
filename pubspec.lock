@@ -497,6 +497,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.1"
+  shell:
+    dependency: "direct main"
+    description:
+      name: shell
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.0"
   shortid:
     dependency: transitive
     description:

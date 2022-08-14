@@ -131,6 +131,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       showHosts: showHosts,
       hostsList: hostsList,
       changeHostList: state.changeHostList + 1,
+      lang: event.lang,
     );
   }
 
