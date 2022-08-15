@@ -176,7 +176,7 @@ class _HomeHostsListState extends State<HomeHostsList>
         continue;
       }
       menus.add(
-        tray_manager.MenuItem(
+        tray_manager.MenuItem.checkbox(
           checked: item.check,
           label: item.name,
           onClick: (tray_manager.MenuItem it) {
