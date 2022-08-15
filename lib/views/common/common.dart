@@ -231,11 +231,6 @@ Future<int> saveHostsToSystem(BuildContext context, I18N lang) async {
           // 替换路径空格，防止cp命令语法错误
           cachePath = cachePath.replaceAll(' ', '');
 
-          // var tmp = await getTemporaryDirectory();
-          // log('缓存目录$tmp');
-          // File cacheHostsFile1 = File(path.join('/tmp', "abd.hosts"));
-          // cacheHostsFile1.writeAsStringSync(hostsBody, flush: true);
-
           await showMacOSAlertDialog(
             context: context,
             builder: (BuildContext context) => MacOSAlertDialog(
@@ -254,6 +249,35 @@ Future<int> saveHostsToSystem(BuildContext context, I18N lang) async {
                           systemPassword = val;
                         },
                         autofocus: true,
+                        onSubmitted: (String systemPassword) async {
+                          if (systemPassword == null || systemPassword == '') {
+                            EasyLoading.showToast(
+                                lang.get('home.system_password_is_empty'));
+                            return;
+                          }
+                          // 拼接shell脚本
+                          List<String> cmds = [
+                            "#!/bin/sh",
+                            "echo '$systemPassword' | sudo -S chmod 777 $hostsFilePath",
+                            "cat \"$cachePath\" > $hostsFilePath",
+                            "echo '$systemPassword' | sudo -S chmod 644 $hostsFilePath"
+                          ];
+                          String shellPath = path.join(rootPath, "hosts.sh");
+                          File shellFile = File(shellPath);
+                          shellFile.writeAsStringSync(cmds.join("\n"),
+                              flush: true);
+                          // 执行新写入的shell
+                          var shell = Shell();
+                          var shellVal = await shell.startAndReadAsString(
+                              '/bin/bash',
+                              arguments: [shellFile.path]);
+                          log('执行shell结果 $shellVal');
+                          saveOk = shellVal == '' ? 1 : 0;
+                          // 删除脚本
+                          shellFile.delete();
+
+                          Navigator.of(context).pop();
+                        },
                       ),
                     ),
                   ],
